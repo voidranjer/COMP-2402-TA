@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayDeque;
 
 public class Part3 {
 
@@ -18,10 +19,33 @@ public class Part3 {
 	 */
 	public static void doIt(BufferedReader r, PrintWriter w) throws IOException {
 		int lineCount = 0;
+		String first1000 = "";
+		ArrayDeque<String> latest1000 = new ArrayDeque<String>();
 
 		for (String line = r.readLine(); line != null; line = r.readLine()) {
 			lineCount++;
 
+			if (lineCount < 1000)
+				continue;
+
+			if (lineCount == 1000) {
+				first1000 = line;
+			}
+
+			latest1000.addLast(line);
+
+			if (latest1000.size() > 2402) {
+				latest1000.removeFirst();
+			}
+
+		}
+
+		if (lineCount >= 1000 && lineCount < 2402) {
+			w.println(first1000);
+		} else if (lineCount >= 2402) {
+			for (int i = 0; i < 1000; i++)
+				latest1000.removeFirst();
+			w.println(latest1000.removeFirst());
 		}
 	}
 
