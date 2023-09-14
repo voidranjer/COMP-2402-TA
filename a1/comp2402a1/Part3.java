@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Part3 {
 
@@ -18,34 +21,28 @@ public class Part3 {
 	 * @throws IOException
 	 */
 	public static void doIt(BufferedReader r, PrintWriter w) throws IOException {
+		final int CACHE_SIZE = 2402;
 		int lineCount = 0;
-		String first1000 = "";
-		ArrayDeque<String> latest1000 = new ArrayDeque<String>();
+		ArrayDeque<String> cache = new ArrayDeque<String>();
 
 		for (String line = r.readLine(); line != null; line = r.readLine()) {
 			lineCount++;
 
-			if (lineCount < 1000)
-				continue;
+			cache.addLast(line);
 
-			if (lineCount == 1000) {
-				first1000 = line;
-			}
-
-			latest1000.addLast(line);
-
-			if (latest1000.size() > 2402) {
-				latest1000.removeFirst();
+			if (cache.size() > CACHE_SIZE) {
+				cache.removeFirst();
 			}
 
 		}
 
-		if (lineCount >= 1000 && lineCount < 2402) {
-			w.println(first1000);
-		} else if (lineCount >= 2402) {
-			for (int i = 0; i < 1000; i++)
-				latest1000.removeFirst();
-			w.println(latest1000.removeFirst());
+		// Sort the cache
+		List<String> sorted = new ArrayList<>(cache);
+		Collections.sort(sorted, (a, b) -> a.compareTo(b));
+
+		// (lineCount >= 1000 && lineCount < 2402)
+		if (lineCount >= 1000) {
+			w.println(sorted.get(999));
 		}
 	}
 
