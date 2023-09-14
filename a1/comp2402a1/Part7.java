@@ -22,32 +22,32 @@ public class Part7 {
 
 		int blockLength = 1;
 		int currLengthPos = 0;
-		String[] block = new String[blockLength];
+		String[] block = new String[1];
+
+		blocks.add(block);
 
 		for (String line = r.readLine(); line != null; line = r.readLine()) {
 			if (currLengthPos >= blockLength) {
-				blocks.add(block);
 				blockLength++;
+				currLengthPos = 0;
 				block = new String[blockLength];
-				block[0] = line; // possibly check for reset line here
-				currLengthPos = 1;
+				blocks.add(block);
 			}
 
 			block[currLengthPos] = line;
 			currLengthPos++;
-			if (line.compareTo("***reset***") == 0) {
-				blocks.add(block);
-				blockLength = 1;
-				block = new String[blockLength];
-				currLengthPos = 1;
-			}
 
+			if (line.equals("***reset***")) {
+				blockLength = 0;
+				currLengthPos = blockLength;
+			}
 		}
 
 		for (int i = blocks.size() - 1; i >= 0; i--) {
 			block = blocks.get(i);
 			for (int j = 0; j < block.length; j++) {
-				w.println(block[j]);
+				if (block[j] != null)
+					w.println(block[j]);
 			}
 		}
 	}
