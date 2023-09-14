@@ -6,22 +6,37 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.TreeSet;
 
 public class Part6 {
-	
+
 	/**
 	 * Your code goes here - see Part0 for an example
+	 * 
 	 * @param r the reader to read from
 	 * @param w the writer to write to
 	 * @throws IOException
 	 */
 	public static void doIt(BufferedReader r, PrintWriter w) throws IOException {
-		// Your code goes here - see Part0 for an example
+		TreeSet<String> ts = new TreeSet<>();
+
+		for (String line = r.readLine(); line != null; line = r.readLine()) {
+			ts.add(line);
+			if (ts.size() > 901) {
+				ts.remove(ts.pollFirst());
+			}
+		}
+
+		if (ts.size() >= 901) {
+			w.println(ts.pollFirst());
+		}
 	}
 
 	/**
-	 * The driver.  Open a BufferedReader and a PrintWriter, either from System.in
-	 * and System.out or from filenames specified on the command line, then call doIt.
+	 * The driver. Open a BufferedReader and a PrintWriter, either from System.in
+	 * and System.out or from filenames specified on the command line, then call
+	 * doIt.
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -33,7 +48,7 @@ public class Part6 {
 				w = new PrintWriter(System.out);
 			} else if (args.length == 1) {
 				r = new BufferedReader(new FileReader(args[0]));
-				w = new PrintWriter(System.out);				
+				w = new PrintWriter(System.out);
 			} else {
 				r = new BufferedReader(new FileReader(args[0]));
 				w = new PrintWriter(new FileWriter(args[1]));
@@ -42,7 +57,7 @@ public class Part6 {
 			doIt(r, w);
 			w.flush();
 			long stop = System.nanoTime();
-			System.out.println("Execution time: " + 1e-9 * (stop-start));
+			System.out.println("Execution time: " + 1e-9 * (stop - start));
 		} catch (IOException e) {
 			System.err.println(e);
 			System.exit(-1);
