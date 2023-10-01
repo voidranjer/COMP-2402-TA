@@ -6,22 +6,46 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.*;
 
 public class Part8 {
 
 	/**
 	 * Your code goes here - see Part0 for an example
+	 * 
 	 * @param r the reader to read from
 	 * @param w the writer to write to
 	 * @throws IOException
 	 */
 	public static void doIt(BufferedReader r, PrintWriter w) throws IOException {
-		// Your code goes here - see Part0 for an example
+		ArrayList<String> array = new ArrayList<String>();
+		HashMap<String, ArrayDeque<Integer>> map = new HashMap<String, ArrayDeque<Integer>>();
+		int lineNum = 0;
+
+		for (String line = r.readLine(); line != null; line = r.readLine()) {
+			array.add(line);
+
+			if (!map.containsKey(line)) {
+				map.put(line, new ArrayDeque<>());
+			}
+
+			map.get(line).addLast(lineNum);
+			lineNum++;
+		}
+
+		Collections.sort(array);
+		for (String line : array) {
+			for (int i = 0; i < map.get(line).size(); i++) {
+				w.println(map.get(line).removeFirst());
+			}
+		}
 	}
 
 	/**
-	 * The driver.  Open a BufferedReader and a PrintWriter, either from System.in
-	 * and System.out or from filenames specified on the command line, then call doIt.
+	 * The driver. Open a BufferedReader and a PrintWriter, either from System.in
+	 * and System.out or from filenames specified on the command line, then call
+	 * doIt.
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -42,7 +66,7 @@ public class Part8 {
 			doIt(r, w);
 			w.flush();
 			long stop = System.nanoTime();
-			System.out.println("Execution time: " + 1e-9 * (stop-start));
+			System.out.println("Execution time: " + 1e-9 * (stop - start));
 		} catch (IOException e) {
 			System.err.println(e);
 			System.exit(-1);

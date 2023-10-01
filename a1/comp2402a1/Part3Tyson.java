@@ -6,12 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 
-public class Part3 {
+public class Part3Tyson {
 
 	/**
 	 * Your code goes here - see Part0 for an example
@@ -21,24 +19,21 @@ public class Part3 {
 	 * @throws IOException
 	 */
 	public static void doIt(BufferedReader r, PrintWriter w) throws IOException {
-		final int CACHE_SIZE = 2402;
-		ArrayDeque<String> cache = new ArrayDeque<String>();
+		// LinkedList<String> llist = new LinkedList<>();
+		ArrayDeque<String> llist = new ArrayDeque<>();
 
 		for (String line = r.readLine(); line != null; line = r.readLine()) {
-			cache.addLast(line);
-
-			if (cache.size() > CACHE_SIZE) {
-				cache.removeFirst();
+			if (llist.size() > 2402) {
+				llist.removeFirst();
 			}
+			llist.add(line);
 
 		}
 
-		// (lineCount >= 1000 && lineCount < 2402)
-		if (cache.size() >= 1000) {
-			// Sort the cache
-			List<String> sorted = new ArrayList<>(cache);
-			Collections.sort(sorted, (a, b) -> a.compareTo(b));
-			w.println(sorted.get(999));
+		if (llist.size() > 1000) {
+			List<String> tosort = new ArrayList<>(llist);
+			Collections.sort(tosort, (a, b) -> a.compareTo(b));
+			w.println(tosort.get(999));
 		}
 	}
 
