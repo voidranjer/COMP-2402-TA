@@ -103,11 +103,16 @@ public class SuperFast implements SuperStack {
   // If front is empty, run this method on the back SuperFast stack, assign return
   // value to front SuperFast stack (and vice versa)
   public SuperFast splitHalves() {
-    if (isEmpty() || size() == 1) // edge cases
-      return null;
-
     SuperFast front = new SuperFast();
     SuperFast back = new SuperFast();
+
+    // edge cases
+    if (isEmpty())
+      return front;
+    if (size() == 1) {
+      front.push(pop());
+      return front;
+    }
 
     int middle = size() / 2;
     for (int i = middle; i >= 0; i--) {
