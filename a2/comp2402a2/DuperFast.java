@@ -63,7 +63,17 @@ public class DuperFast implements DuperDeque {
   }
 
   public Iterator<Integer> iterator() {
-    // TODO: Your code goes here
-    return null;
+    return new Iterator<>() {
+      Iterator<Integer> frontiterator = front.reverseIterator();
+      Iterator<Integer> backiterator = back.iterator();
+
+      public boolean hasNext() {
+        return frontiterator.hasNext() || backiterator.hasNext();
+      }
+
+      public Integer next() {
+        return frontiterator.hasNext() ? frontiterator.next() : backiterator.next();
+      }
+    };
   }
 }

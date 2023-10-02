@@ -131,4 +131,18 @@ public class SuperFast implements SuperStack {
   public Long getFromPrefixSum(int index) {
     return sumlist.get(index);
   }
+
+  public Iterator<Integer> reverseIterator() {
+    return new Iterator<Integer>() {
+      ListIterator<Integer> iterator = arraylist.listIterator(size());
+
+      public boolean hasNext() {
+        return iterator.hasPrevious();
+      }
+
+      public Integer next() {
+        return iterator.previous();
+      }
+    };
+  }
 }
