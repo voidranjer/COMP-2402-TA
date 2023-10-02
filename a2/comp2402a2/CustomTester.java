@@ -6,18 +6,21 @@ public class CustomTester {
   }
 
   public static void main(String[] args) {
-    SuperFast sf = new SuperFast();
+    DuperFast df = new DuperFast();
 
-    sf.push(1000);
-    sf.push(20);
-    sf.push(1);
-    sf.push(10);
+    df.addFirst(1);
+    df.addFirst(2);
+    df.addLast(10);
+    df.addLast(20);
 
-    // println(sf.num);
-
-    println(sf.ksum(1));
-    println(sf.ksum(2));
-    println(sf.ksum(3));
-    println(sf.ksum(4));
+    println("Size:" + df.size());
+    println("Removing: " + df.removeLast());
+    println("Size:" + df.size());
+    println("Removing: " + df.removeLast());
+    println("Size:" + df.size());
+    println("Removing: " + df.removeLast());
+    println("Size:" + df.size());
+    println("Removing: " + df.removeLast());
+    println("Size:" + df.size());
   }
 }
