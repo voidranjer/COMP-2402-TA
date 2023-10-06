@@ -65,12 +65,12 @@ public class SuperFast implements SuperStack {
   public long ksum(int k) {
     /*
      * Input: [1000, 20, 1, 10]
-     * 
+     *
      * k=1 1000 10
      * k=2 1020 11
      * k=3 1030 31
      * k=4 1031 1031
-     * 
+     *
      * left sum of k largest numbers
      * right: sum of k newest/latest numbers added
      */
@@ -82,12 +82,21 @@ public class SuperFast implements SuperStack {
     return sumlist.get(size() - 1) - sumlist.get(size() - k - 1);
   }
 
+  // public long ksum(int k) {
+  // long max;
+  // if (arraylist.size() <= 0) {
+  // max = 0;
+  // } else if ((k + 1) > arraylist.size()) {
+  // max = sumlist.get(sumlist.size() - 1);
+  // } else {
+  // max = (sumlist.get(sumlist.size() - 1) - (sumlist.get(sumlist.size() - 1 -
+  // k)));
+  // }
+  // return max;
+  // }
+
   public int size() {
     return arraylist.size();
-  }
-
-  public Iterator<Integer> iterator() {
-    return arraylist.iterator();
   }
 
   public boolean isEmpty() {
@@ -130,6 +139,10 @@ public class SuperFast implements SuperStack {
 
   public Long getFromPrefixSum(int index) {
     return sumlist.get(index);
+  }
+
+  public Iterator<Integer> iterator() {
+    return arraylist.iterator();
   }
 
   public Iterator<Integer> reverseIterator() {
