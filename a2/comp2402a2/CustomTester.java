@@ -6,7 +6,5 @@ public class CustomTester {
   }
 
   public static void main(String[] args) {
-    SuperFast myStack = new SuperFast();
-
   }
 }

@@ -15,10 +15,10 @@ public class SuperSlow implements SuperStack {
   }
 
   public Integer pop() {
-    if(size() <= 0)
+    if (size() <= 0)
       return null;
     else
-      return ds.remove(ds.size()-1);
+      return ds.remove(ds.size() - 1);
   }
 
   public Integer max() {
@@ -33,7 +33,7 @@ public class SuperSlow implements SuperStack {
 
   public long ksum(int k) {
     long sum = 0;
-    for(int i=0; i<k && i<ds.size(); i++)
+    for (int i = 0; i < k && i < ds.size(); i++)
       sum += ds.get(ds.size() - 1 - i);
     return sum;
   }
