@@ -44,16 +44,20 @@ public class DuperFast implements DuperDeque {
   public long ksumFirst(int k) {
     if (k <= front.size())
       return front.ksumLast(k);
+
     if (front.isEmpty())
       return back.ksumFirst(k);
+
     return front.ksumLast(k) + back.ksumFirst(k - front.size());
   }
 
   public long ksumLast(int k) {
     if (k <= back.size())
       return back.ksumLast(k);
+
     if (back.isEmpty())
       return front.ksumFirst(k);
+
     return back.ksumLast(k) + front.ksumFirst(k - back.size());
   }
 

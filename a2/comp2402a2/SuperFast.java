@@ -65,18 +65,6 @@ public class SuperFast implements SuperStack {
   }
 
   public long ksum(int k) {
-    return ksumLast(k);
-  }
-
-  public long ksumFirst(int k) {
-    if (k == 0)
-      return 0;
-    if (k > sumlist.size()) // just return max sum
-      return sumlist.get(sumlist.size() - 1);
-    return sumlist.get(k - 1);
-  }
-
-  public long ksumLast(int k) {
     /*
      * Input: [1000, 20, 1, 10]
      *
@@ -94,6 +82,18 @@ public class SuperFast implements SuperStack {
     if (k >= sumlist.size()) // just return max sum
       return sumlist.get(sumlist.size() - 1);
     return sumlist.get(sumlist.size() - 1) - sumlist.get(sumlist.size() - k - 1);
+  }
+
+  public long ksumFirst(int k) {
+    if (k == 0)
+      return 0;
+    if (k > sumlist.size()) // just return max sum
+      return sumlist.get(sumlist.size() - 1);
+    return sumlist.get(k - 1); // [0, 1, 2, 3]
+  }
+
+  public long ksumLast(int k) {
+    return ksum(k);
   }
 
   public int size() {
