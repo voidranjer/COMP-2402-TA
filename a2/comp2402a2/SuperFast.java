@@ -19,7 +19,8 @@ public class SuperFast implements SuperStack {
       sumlist.add(Long.valueOf(x));
     } else {
       Integer currentMax = maxlist.get(maxlist.size() - 1);
-      maxlist.add(x > currentMax ? x : currentMax);
+      if (x >= currentMax) // This part works hand in hand with the logic in pop()
+        maxlist.add(x);
 
       Long lastElementOfSum = sumlist.get(sumlist.size() - 1);
       sumlist.add(lastElementOfSum + x);
@@ -49,20 +50,33 @@ public class SuperFast implements SuperStack {
     if (isEmpty())
       return null;
 
-    // we do not have to return these values. these steps are only done to keep the
-    // length of maxlist and arraylist in sync
-    maxlist.remove(size() - 1);
-    sumlist.remove(size() - 1);
-    return arraylist.remove(arraylist.size() - 1);
+    Integer removed = arraylist.remove(arraylist.size() - 1);
+    sumlist.remove(sumlist.size() - 1);
+    if (removed == maxlist.get(maxlist.size() - 1))
+      maxlist.remove(maxlist.size() - 1); // If the removed element is the max element, remove it from maxlist
+
+    return removed;
   }
 
   public Integer max() {
     if (isEmpty())
       return null;
-    return maxlist.get(size() - 1);
+    return maxlist.get(maxlist.size() - 1);
   }
 
   public long ksum(int k) {
+    return ksumLast(k);
+  }
+
+  public long ksumFirst(int k) {
+    if (k == 0)
+      return 0;
+    if (k > sumlist.size()) // just return max sum
+      return sumlist.get(sumlist.size() - 1);
+    return sumlist.get(k - 1);
+  }
+
+  public long ksumLast(int k) {
     /*
      * Input: [1000, 20, 1, 10]
      *
@@ -77,23 +91,10 @@ public class SuperFast implements SuperStack {
 
     if (k == 0)
       return 0;
-    if (k > size() - 1) // just return max sum
-      return sumlist.get(size() - 1);
-    return sumlist.get(size() - 1) - sumlist.get(size() - k - 1);
+    if (k >= sumlist.size()) // just return max sum
+      return sumlist.get(sumlist.size() - 1);
+    return sumlist.get(sumlist.size() - 1) - sumlist.get(sumlist.size() - k - 1);
   }
-
-  // public long ksum(int k) {
-  // long max;
-  // if (arraylist.size() <= 0) {
-  // max = 0;
-  // } else if ((k + 1) > arraylist.size()) {
-  // max = sumlist.get(sumlist.size() - 1);
-  // } else {
-  // max = (sumlist.get(sumlist.size() - 1) - (sumlist.get(sumlist.size() - 1 -
-  // k)));
-  // }
-  // return max;
-  // }
 
   public int size() {
     return arraylist.size();
@@ -101,6 +102,10 @@ public class SuperFast implements SuperStack {
 
   public boolean isEmpty() {
     return size() <= 0;
+  }
+
+  public Iterator<Integer> iterator() {
+    return arraylist.iterator();
   }
 
   public void cloneProperties(SuperFast other) {
@@ -135,14 +140,6 @@ public class SuperFast implements SuperStack {
     cloneProperties(back);
 
     return front;
-  }
-
-  public Long getFromPrefixSum(int index) {
-    return sumlist.get(index);
-  }
-
-  public Iterator<Integer> iterator() {
-    return arraylist.iterator();
   }
 
   public Iterator<Integer> reverseIterator() {
