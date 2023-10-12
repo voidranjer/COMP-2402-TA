@@ -10,20 +10,22 @@ public class CustomTester {
 
     df.addFirst(2);
     df.addFirst(1);
+    df.removeLast();
     // df.addLast(3);
     // df.addLast(4);
+
+    System.out.printf("Front (reversed): %s\n", df.front.arraylist);
+    System.out.printf("Back: %s\n", df.back.arraylist);
 
     println(df.ksumLast(0));
     println(df.ksumLast(1));
     println(df.ksumLast(2));
     println(df.ksumLast(3));
-    println(df.ksumLast(4));
-    println(df.ksumLast(5));
 
-    System.out.print("[ ");
-    for (Integer i : df) {
-      System.out.print(i + " ");
-    }
-    println("]");
+    // System.out.print("[ ");
+    // for (Integer i : df) {
+    // System.out.print(i + " ");
+    // }
+    // println("]");
   }
 }

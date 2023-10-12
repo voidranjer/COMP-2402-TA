@@ -42,21 +42,21 @@ public class DuperFast implements DuperDeque {
   }
 
   public long ksumFirst(int k) {
-    if (k <= front.size())
-      return front.ksumLast(k);
-
     if (front.isEmpty())
       return back.ksumFirst(k);
+
+    if (k <= front.size())
+      return front.ksumLast(k);
 
     return front.ksumLast(k) + back.ksumFirst(k - front.size());
   }
 
   public long ksumLast(int k) {
-    if (k <= back.size())
-      return back.ksumLast(k);
-
     if (back.isEmpty())
       return front.ksumFirst(k);
+
+    if (k <= back.size())
+      return back.ksumLast(k);
 
     return back.ksumLast(k) + front.ksumFirst(k - back.size());
   }
@@ -78,5 +78,31 @@ public class DuperFast implements DuperDeque {
         return frontiterator.hasNext() ? frontiterator.next() : backiterator.next();
       }
     };
+  }
+
+  public void balance() {
+    if (front.size() == 0 && back.size() == 0)
+      return;
+
+    if (front.size() == 0) {
+      int mid = back.size() / 2;
+      for (int i = 0; i < mid; i++) {
+        front.push(back.arraylist.get(i));
+      }
+
+      SuperFast newBack = new SuperFast();
+
+      for (int i = back.arraylist.size(); i >= mid; i--) {
+        newBack.push(back.arraylist.get(i));
+      }
+
+      back = newBack;
+    }
+
+    if (back.size() == 0) {
+      for (int i = 0; i < front.size() / 2; i++) {
+        back.push(front.pop());
+      }
+    }
   }
 }
