@@ -121,4 +121,38 @@ public class SuperFast implements SuperStack {
       }
     };
   }
+
+  public void cloneProperties(SuperFast other) {
+    this.arraylist = other.arraylist;
+    this.maxlist = other.maxlist;
+    this.sumlist = other.sumlist;
+  }
+
+  // If front is empty, run this method on the back SuperFast stack, assign return
+  // value to front SuperFast stack (and vice versa)
+  public SuperFast splitHalves() {
+    SuperFast front = new SuperFast();
+    SuperFast back = new SuperFast();
+
+    // edge cases
+    if (isEmpty())
+      return front;
+    if (size() == 1) {
+      front.push(pop());
+      return front;
+    }
+
+    int middle = size() / 2;
+    for (int i = middle; i >= 0; i--) {
+      front.push(arraylist.get(i));
+    }
+
+    for (int i = middle + 1; i < size(); i++) {
+      back.push(arraylist.get(i));
+    }
+
+    cloneProperties(back);
+
+    return front;
+  }
 }

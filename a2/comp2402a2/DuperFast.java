@@ -80,29 +80,30 @@ public class DuperFast implements DuperDeque {
     };
   }
 
-  public void balance() {
-    if (front.size() == 0 && back.size() == 0)
-      return;
+  // public void balance() {
+  // if (front.size() == 0 && back.size() == 0)
+  // return;
 
-    if (front.size() == 0) {
-      int mid = back.size() / 2;
-      for (int i = 0; i < mid; i++) {
-        front.push(back.arraylist.get(i));
-      }
+  // if (front.size() == 0) {
+  // int mid = back.size() / 2;
+  // for (int i = 0; i < mid; i++) {
+  // front.push(back.arraylist.get(i));
+  // }
 
-      SuperFast newBack = new SuperFast();
+  // SuperFast newBack = new SuperFast();
 
-      for (int i = back.arraylist.size(); i >= mid; i--) {
-        newBack.push(back.arraylist.get(i));
-      }
+  // for (int i = back.arraylist.size(); i >= mid; i--) {
+  // newBack.push(back.arraylist.get(i));
+  // }
 
-      back = newBack;
-    }
+  // back = newBack;
+  // }
 
-    if (back.size() == 0) {
-      for (int i = 0; i < front.size() / 2; i++) {
-        back.push(front.pop());
-      }
-    }
-  }
+  // if (back.size() == 0) {
+  // for (int i = 0; i < front.size() / 2; i++) {
+  // back.push(front.pop());
+  // }
+  // }
+  // }
+
 }
