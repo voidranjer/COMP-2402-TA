@@ -1,158 +1,80 @@
+
 package comp2402a2;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class SuperFast implements SuperStack {
-  ArrayList<Integer> arraylist;
-  ArrayList<Integer> maxlist;
-  ArrayList<Long> sumlist;
+  protected ArrayList<Long> sums;
+  protected ArrayList<Integer> sf;
+  protected ArrayList<Integer> maxes;
+  protected Integer max;
 
   public SuperFast() {
-    arraylist = new ArrayList<>();
-    maxlist = new ArrayList<>();
-    sumlist = new ArrayList<>();
+    sf = new ArrayList<>();
+    sums = new ArrayList<>();
+    maxes = new ArrayList<>();
+    max = null;
   }
 
   public void push(Integer x) {
-    if (isEmpty()) {
-      maxlist.add(x);
-      sumlist.add(Long.valueOf(x));
-    } else {
-      Integer currentMax = maxlist.get(maxlist.size() - 1);
-      if (x >= currentMax) // This part works hand in hand with the logic in pop()
-        maxlist.add(x);
+    sums.add(Long.valueOf(x) + peekSum());
 
-      Long lastElementOfSum = sumlist.get(sumlist.size() - 1);
-      sumlist.add(lastElementOfSum + x);
+    sf.add(x);
+
+    if (maxes.isEmpty() || max == null) {
+      max = x;
+    } else if (x > max) {
+      max = x;
     }
+    maxes.add(max);
 
-    arraylist.add(x);
-
-    /*
-     * Example maxlist:
-     * maxlist | arraylist
-     * [1] | [1]
-     * [1, 1000] | [1, 1000]
-     * [1, 1000, 1000] | [1, 1000, 2]
-     * [1, 1000, 1000, 1000] | [1, 1000, 2, 3]
-     * [1, 1000, 1000] | [1, 1000, 2]
-     * 
-     * Logic: We maintain a maxlist that is the same size as the arraylist. Each
-     * index of the maxlist represents the current max value of the arraylist up to
-     * that index (stores a snapshot of what the current max element is in the state
-     * given by the index of maxlist). This only works because we are implementing a
-     * stack, and adding/removing elements are always done in Stack order.
-     * For example, this wouldn't work if we were implementing an arraylist
-     */
   }
 
   public Integer pop() {
-    if (isEmpty())
+    if (size() <= 0) {
       return null;
-
-    Integer removed = arraylist.remove(arraylist.size() - 1);
-    sumlist.remove(sumlist.size() - 1);
-    if (removed == maxlist.get(maxlist.size() - 1))
-      maxlist.remove(maxlist.size() - 1); // If the removed element is the max element, remove it from maxlist
-
-    return removed;
+    } else {
+      sums.remove(sums.size() - 1);
+      maxes.remove(maxes.size() - 1);
+      return sf.remove(sf.size() - 1);
+    }
   }
 
   public Integer max() {
-    if (isEmpty())
+    if (sf.isEmpty() || max == null) {
       return null;
-    return maxlist.get(maxlist.size() - 1);
+    }
+    return maxes.get(maxes.size() - 1);
   }
 
+  // new arraylist where everything added is equal to the sum of everything before
+  // it including itself
   public long ksum(int k) {
-    /*
-     * Input: [1000, 20, 1, 10]
-     *
-     * k=1 1000 10
-     * k=2 1020 11
-     * k=3 1030 31
-     * k=4 1031 1031
-     *
-     * left sum of k largest numbers
-     * right: sum of k newest/latest numbers added
-     */
-
-    if (k == 0)
+    int index = sf.size() - 1;
+    if (sums.isEmpty() || k <= 0) {
       return 0;
-    if (k >= sumlist.size()) // just return max sum
-      return sumlist.get(sumlist.size() - 1);
-    return sumlist.get(sumlist.size() - 1) - sumlist.get(sumlist.size() - k - 1);
-  }
+    } else if (k > index) {
+      return peekSum();
+    }
 
-  public long ksumFirst(int k) {
-    if (k == 0 || sumlist.size() == 0)
-      return 0;
-    if (k > sumlist.size()) // just return max sum
-      return sumlist.get(sumlist.size() - 1);
-    return sumlist.get(k - 1); // [0, 1, 2, 3]
-  }
-
-  public long ksumLast(int k) {
-    return ksum(k);
+    long sum = sums.get(index) - sums.get(index - k);
+    return sum;
   }
 
   public int size() {
-    return arraylist.size();
+    return sf.size();
   }
 
-  public boolean isEmpty() {
-    return size() <= 0;
+  public long peekSum() {
+    if (size() <= 0)
+      return 0;
+    else
+      return sums.get(sums.size() - 1);
   }
 
   public Iterator<Integer> iterator() {
-    return arraylist.iterator();
-  }
-
-  public Iterator<Integer> reverseIterator() {
-    return new Iterator<Integer>() {
-      ListIterator<Integer> iterator = arraylist.listIterator(size());
-
-      public boolean hasNext() {
-        return iterator.hasPrevious();
-      }
-
-      public Integer next() {
-        return iterator.previous();
-      }
-    };
-  }
-
-  public void cloneProperties(SuperFast other) {
-    this.arraylist = other.arraylist;
-    this.maxlist = other.maxlist;
-    this.sumlist = other.sumlist;
-  }
-
-  // If front is empty, run this method on the back SuperFast stack, assign return
-  // value to front SuperFast stack (and vice versa)
-  public SuperFast splitHalves() {
-    SuperFast front = new SuperFast();
-    SuperFast back = new SuperFast();
-
-    // edge cases
-    if (isEmpty())
-      return front;
-    if (size() == 1) {
-      front.push(pop());
-      return front;
-    }
-
-    int middle = size() / 2;
-    for (int i = middle; i >= 0; i--) {
-      front.push(arraylist.get(i));
-    }
-
-    for (int i = middle + 1; i < size(); i++) {
-      back.push(arraylist.get(i));
-    }
-
-    cloneProperties(back);
-
-    return front;
+    return sf.iterator();
   }
 }

@@ -6,21 +6,33 @@ public class CustomTester {
   }
 
   public static void main(String[] args) {
-    DuperFast df = new DuperFast();
+    SuperFast sf = new SuperFast();
 
-    df.addFirst(2);
-    df.addFirst(1);
-    df.removeLast();
-    // df.addLast(3);
-    // df.addLast(4);
+    sf.push(1);
+    sf.push(4);
 
-    System.out.printf("Front (reversed): %s\n", df.front.arraylist);
-    System.out.printf("Back: %s\n", df.back.arraylist);
+    // [1, 4]
 
-    println(df.ksumLast(0));
-    println(df.ksumLast(1));
-    println(df.ksumLast(2));
-    println(df.ksumLast(3));
+    sf.pop(); // max = 4
+
+    // [1]
+
+    sf.push(3);
+
+    // [1, 3]
+
+    System.out.println(sf.max());
+
+    // System.out.println(sf.maxes);
+    // System.out.println(sf.max());
+
+    // sf.pop();
+    // sf.pop();
+    // sf.pop();
+    // sf.pop();
+    // sf.pop();
+
+    // System.out.println(sf.max());
 
     // System.out.print("[ ");
     // for (Integer i : df) {
