@@ -1,5 +1,4 @@
 package comp2402a3;
-
 import java.util.Iterator;
 import java.util.Random;
 
@@ -16,11 +15,11 @@ public class Tester {
         System.out.println("]");
     }
 
-    static void skippityTest(int n) {
+    static void skippityTest(int n){
         Random rand = new Random();
         IndexedSSet<Integer> iss = new SkippitySlow<>();
         for (int i = 0; i < n; i++) {
-            int x = rand.nextInt(3 * n);
+            int x = rand.nextInt(3*n);
             System.out.println("add(" + x + ") = " + iss.add(x));
         }
         System.out.print("Contents: ");
@@ -33,15 +32,13 @@ public class Tester {
         }
 
         for (int i = 0; i < 10; i++) {
-            int x = rand.nextInt(3 * n);
-            int y = rand.nextInt(3 * n);
-            System.out.println("rangecount(" + x + ", " + y + ") = " + iss.rangecount(x, y));
+            int x = rand.nextInt(3*n);
+            int y = rand.nextInt(3*n);
+            System.out.println("rangecount(" + x + ", " + y + ") = "+iss.rangecount(x, y));
         }
-
-        System.out.println(iss.stack);
     }
 
-    static void treeTest(int n) {
+    static void treeTest(int n){
         BinaryTree t = BinaryTree.randomBST(n);
         System.out.println("Tree:" + t);
         System.out.println("size() = " + t.size());
@@ -52,7 +49,7 @@ public class Tester {
     }
 
     public static void main(String[] args) {
-        skippityTest(5);
-        // treeTest(20);
+        skippityTest(20);
+        treeTest(20);
     }
 }
