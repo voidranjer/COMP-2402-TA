@@ -161,8 +161,9 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 				j += u.length[r];
 				u = u.next[r];
 			}
+
 			if (u.next[r] != null && comp == 0) {
-				// come back before
+				// come back before // THIS IS NEW
 				for (int i = 0; i < count; i++) {
 					fStack[i].length[fIndex[i]]--;
 				}

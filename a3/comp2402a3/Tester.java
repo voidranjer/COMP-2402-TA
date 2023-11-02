@@ -1,4 +1,5 @@
 package comp2402a3;
+
 import java.util.Iterator;
 import java.util.Random;
 
@@ -15,30 +16,37 @@ public class Tester {
         System.out.println("]");
     }
 
-    static void skippityTest(int n){
-        Random rand = new Random();
-        IndexedSSet<Integer> iss = new SkippitySlow<>();
-        for (int i = 0; i < n; i++) {
-            int x = rand.nextInt(3*n);
-            System.out.println("add(" + x + ") = " + iss.add(x));
-        }
-        System.out.print("Contents: ");
+    static void skippityTest(int n) {
+        IndexedSSet<Integer> iss = new SkippityFast<>();
+
+        iss.add(1);
+        iss.add(2);
+
         showContents(iss);
 
-        System.out.println("size()=" + iss.size());
+        // Random rand = new Random();
+        // for (int i = 0; i < n; i++) {
+        // int x = rand.nextInt(3 * n);
+        // System.out.println("add(" + x + ") = " + iss.add(x));
+        // }
+        // System.out.print("Contents: ");
+        // showContents(iss);
 
-        for (int i = 0; i < iss.size(); i++) {
-            System.out.println("get(" + i + ")=" + iss.get(i));
-        }
+        // System.out.println("size()=" + iss.size());
 
-        for (int i = 0; i < 10; i++) {
-            int x = rand.nextInt(3*n);
-            int y = rand.nextInt(3*n);
-            System.out.println("rangecount(" + x + ", " + y + ") = "+iss.rangecount(x, y));
-        }
+        // for (int i = 0; i < iss.size(); i++) {
+        // System.out.println("get(" + i + ")=" + iss.get(i));
+        // }
+
+        // for (int i = 0; i < 10; i++) {
+        // int x = rand.nextInt(3 * n);
+        // int y = rand.nextInt(3 * n);
+        // System.out.println("rangecount(" + x + ", " + y + ") = " + iss.rangecount(x,
+        // y));
+        // }
     }
 
-    static void treeTest(int n){
+    static void treeTest(int n) {
         BinaryTree t = BinaryTree.randomBST(n);
         System.out.println("Tree:" + t);
         System.out.println("size() = " + t.size());
@@ -50,6 +58,6 @@ public class Tester {
 
     public static void main(String[] args) {
         skippityTest(20);
-        treeTest(20);
+        // treeTest(20);
     }
 }
