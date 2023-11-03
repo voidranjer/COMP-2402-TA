@@ -259,6 +259,7 @@ public class SkippityFast<T extends Comparable<T>> implements IndexedSSet<T> {
         index++;
         int newHeight = pickHeight();
         Node<T> newNode = new Node<>(x, newHeight);
+
         if (newHeight > this.height) {
             for (int i = this.height + 1; i < newHeight + 1; i++) {
                 stack[i] = sentinel;
@@ -267,8 +268,10 @@ public class SkippityFast<T extends Comparable<T>> implements IndexedSSet<T> {
             }
             this.height = newHeight;
         }
+
         for (int i = 0; i <= this.height; i++)
             stack[i].length[i]++;
+
         for (int i = 0; i < newNode.next.length; i++) {
             comp = index - predIndex[i];
             newNode.next[i] = stack[i].next[i];

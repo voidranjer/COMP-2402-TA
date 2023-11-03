@@ -151,6 +151,8 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 				u = u.next[level]; // moving to the right along the same level
 			}
 
+			// THIS IS WRONG (WHAT IF THE ELEMENT SHOULDNT BE ADDED)
+			// ALSO CHECK: this.h = newHeight
 			u.length[level]++; // [LIST FUNCTIONALITY]: increment the length of jump for every path that we go
 			// one level down from
 

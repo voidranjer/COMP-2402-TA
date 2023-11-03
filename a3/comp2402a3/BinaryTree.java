@@ -423,10 +423,13 @@ public class BinaryTree<Node extends BinaryTree.BTNode<Node>> {
 	public String bracketSequence() {
 		if (r == nil)
 			return ".";
+
 		StringBuilder sb = new StringBuilder();
-		// TODO: Your code goes here, must avoid recursion
+
 		Node u = r, prev = nil, next;
 		while (u != nil) {
+
+			// came from parent
 			if (prev == u.parent) {
 				if (u.left != nil) {
 					next = u.left;
@@ -438,19 +441,27 @@ public class BinaryTree<Node extends BinaryTree.BTNode<Node>> {
 					next = u.parent;
 					sb.append("(..)");
 				}
-			} else if (prev == u.left) {
+			}
+
+			// came from left child
+			else if (prev == u.left) {
 				if (u.right != nil) {
 					next = u.right;
 				} else {
 					next = u.parent;
 					sb.append(".)");
 				}
-			} else {
+			}
+
+			// came from right child
+			else {
 				next = u.parent;
 				sb.append(")");
 			}
+
 			prev = u;
 			u = next;
+
 		}
 		return sb.toString();
 	}
