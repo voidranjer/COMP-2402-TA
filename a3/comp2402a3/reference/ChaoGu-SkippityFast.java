@@ -164,6 +164,9 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 
 			if (u.next[r] != null && comp == 0) {
 				// come back before // THIS IS NEW
+				// this is for if we tried to add an element that already exists (we revisit all
+				// touched nodes and undo the count increment because we didn't actually end up
+				// adding anything)
 				for (int i = 0; i < count; i++) {
 					fStack[i].length[fIndex[i]]--;
 				}
@@ -171,13 +174,21 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 			}
 			// account for new node
 			u.length[r]++;
-			// store we add element
-			fStack[count] = u;
-			fIndex[count] = r;
+
+			fStack[count] = u; // store we add element (in case we have to revisit to undo the changes if the
+													// new element ends up being a duplicate element)
+			fIndex[count] = r; // technically, this should be fHeight instead of fIndex. it keeps track of the
+													// height of the node<T>
 			count++;
 
 			// store the index
-			index[r] = j;
+			index[r] = j; // store the index of the node from which we go down, indexed at the height of
+										// the drop. very smart because it remembers the index of node on add()
+										// execution
+										// (j is not stored in individual nodes). this index is used for the
+										// "w.length[i] = stack[i].length[i] - (wIndex - index[i]);" calculations later
+										// (page 96 and 97
+										// of ODS textbook)
 			stack[r] = u; // going down, store u
 			r--;
 		}

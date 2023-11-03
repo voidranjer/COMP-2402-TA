@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.ArrayList;
 
 /**
  * An implementation of skiplists for searching
@@ -22,13 +21,11 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 		// ArrayList<Node<T>> next;
 		Node<T>[] next;
 		int[] length; // [LIST FUNCTIONALITY]: length of jumps at each level
-		int index; // [LIST FUNCTIONALITY]: index of Node<T> in list
 
-		public Node(T ix, int h, int index) {
+		public Node(T ix, int h) {
 			x = ix;
 			next = (Node<T>[]) Array.newInstance(Node.class, h + 1);
-			length = new int[h + 1];
-			this.index = index;
+			length = new int[h + 1]; // [LIST FUNCTIONALITY]: initialize the length
 		}
 
 		public int height() {
@@ -60,13 +57,16 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 	 * Used by add(x) method
 	 */
 	protected Node<T>[] stack;
+	protected int[] uIndices; // [LIST FUNCTIONALITY]: index of 'u' nodes in list (nodes on the far right
+														// edges, right before dropping down a level)
 
 	@SuppressWarnings("unchecked")
 	public SkippityFast(Comparator<T> c) {
 		this.c = c;
 		n = 0;
-		sentinel = new Node<T>(null, 32, -1);
+		sentinel = new Node<T>(null, 32);
 		stack = (Node<T>[]) Array.newInstance(Node.class, sentinel.next.length);
+		uIndices = new int[sentinel.next.length];
 		h = 0;
 		rand = new Random();
 	}
@@ -140,45 +140,61 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 	public boolean add(T x) {
 		Node<T> u = sentinel;
 
-		int r = h;
-		int j = -1; // [LIST FUNCTIONALITY]: index of nodes in list
+		int level = h; // aka 'r'
+		int index = -1; // aka 'j', [LIST FUNCTIONALITY]: index of nodes in list
 		int comp = 0;
 
-		while (r >= 0) {
+		while (level >= 0) {
 			// move to the furthest right possible before going down
-			while (u.next[r] != null && (comp = c.compare(u.next[r].x, x)) < 0) {
-				j += u.length[r]; // [LIST FUNCTIONALITY]: increment list index (by the distance of the jump)
-				u = u.next[r];
+			while (u.next[level] != null && (comp = c.compare(u.next[level].x, x)) < 0) {
+				index += u.length[level]; // [LIST FUNCTIONALITY]: increment list index (by the distance of the jump)
+				u = u.next[level]; // moving to the right along the same level
 			}
 
-			u.length[r]++; // [LIST FUNCTIONALITY]: increment the length of jump for every path that we go
-											// one level down from
+			u.length[level]++; // [LIST FUNCTIONALITY]: increment the length of jump for every path that we go
+			// one level down from
 
 			// element already exists in the set (because comp == 0)
-			if (u.next[r] != null && comp == 0)
+			if (u.next[level] != null && comp == 0)
 				return false;
 
-			// already at the furthest right edge, going down now, and storing u
-			stack[r] = u;
+			// already at the furthest right edge, going down now
+			stack[level] = u; // store the 'u' node (the node right before dropping down a level)
+			uIndices[level] = index; // [LIST FUNCTIONALITY]: store index of the 'u' node for calculations (page 96
+																// and 97 of ODS textbook)
 
-			r--;
+			level--;
 		}
 
-		// int wIndex = j; // [LIST FUNCTIONALITY]: index of w in list
-		Node<T> w = new Node<T>(x, pickHeight(), j);
+		index++; // [LIST FUNCTIONALITY]: previously, index has just been the index of 'u'
+							// (predecessor of w)
+							// now, we are adding w, so we increment index by 1
 
-		// height of new node exceeds current height (of sentinel)
-		while (h < w.height())
-			stack[++h] = sentinel; // add sentinel to stack
+		int newHeight = pickHeight(); // height of new node
+		Node<T> w = new Node<T>(x, newHeight);
+
+		/*
+		 * height of new node exceeds current height (of sentinel)
+		 * - note: 'h' is the height of the Skiplist, but 'h' starts at 0
+		 * - the above code started at 'h', (if there are 5 layers, h = 4).
+		 * - so, if the new node is taller, that means we start at h + 1 instead of h
+		 * - newHeight + 1 because Node constructor takes (height + 1) from the argument
+		 */
+		for (int i = h + 1; i < newHeight + 1; i++) {
+			stack[i] = sentinel;
+			uIndices[i] = -1; // index of sentinel is always -1. for example, length of SENTINEL -> NODES[2] =
+												// 2-(-1) = 3.
+		}
 
 		// Inserting w: stack[i] -> w -> old stack[i].next[i]
 		for (int i = 0; i < w.next.length; i++) {
 			w.next[i] = stack[i].next[i]; // points w to nodes that are supposed to come after w
 			stack[i].next[i] = w; // points nodes before w to w
 
-			int i_j = w.index - u.index; // [LIST FUNCTIONALITY]
-			w.length[i] = u.length[i] - (i_j); // [LIST FUNCTIONALITY]
-			u.length[i] = i_j; // [LIST FUNCTIONALITY]
+			int iMinusj = index - uIndices[i]; // [LIST FUNCTIONALITY]: distance between 'u' and 'w' at level i (page 96 - ODS
+																					// textbook)
+			w.length[i] = u.length[i] - iMinusj; // [LIST FUNCTIONALITY]
+			u.length[i] = iMinusj; // [LIST FUNCTIONALITY]
 		}
 
 		n++;
@@ -210,13 +226,19 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 	}
 
 	public T get(int i) {
-		// This is just a copy of the slow version
-		// TODO: You need to rewrite this method so that it is faster
-		Iterator<T> it = this.iterator();
-		for (int j = 0; j < i; j++) {
-			it.next();
+		Node<T> u = sentinel;
+		int level = h;
+		int index = -1; // index of sentinel is always -1
+
+		while (level >= 0) {
+			while (u.next[level] != null && index + u.length[level] < i) {
+				index += u.length[level];
+				u = u.next[level]; // move right
+			}
+			level--;
 		}
-		return it.next();
+
+		return u.next[0].x;
 	}
 
 	public int rangecount(T x, T y) {
