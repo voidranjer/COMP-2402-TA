@@ -174,8 +174,7 @@ public class BinaryTree<Node extends BinaryTree.BTNode<Node>> {
 		while (u != nil) {
 			if (prev == u.parent) {
 
-				/* action code */
-				/* action code */
+				/* action code here */
 
 				if (u.left != nil) {
 					next = u.left;
@@ -207,6 +206,9 @@ public class BinaryTree<Node extends BinaryTree.BTNode<Node>> {
 			q.add(r);
 		while (!q.isEmpty()) {
 			Node u = q.remove();
+
+			/* action code here */
+
 			if (u.left != nil)
 				q.add(u.left);
 			if (u.right != nil)
@@ -249,6 +251,10 @@ public class BinaryTree<Node extends BinaryTree.BTNode<Node>> {
 		if (u == nil)
 			return -1;
 		return 1 + Math.max(height(u.left), height(u.right));
+	}
+
+	protected boolean isLeaf(Node u) {
+		return u.left == nil && u.right == nil;
 	}
 
 	public int leafAndOnlyLeaf() {
@@ -296,9 +302,31 @@ public class BinaryTree<Node extends BinaryTree.BTNode<Node>> {
 
 	public int dawnOfSpring() {
 		// TODO: Your code goes here, must avoid recursion
-		if (r == nil)
+		// if (r == nil)
+		// return -1;
+		// return dawnOfSpringHelper(r, 0);
+
+		if (isEmpty())
 			return -1;
-		return dawnOfSpringHelper(r, 0);
+
+		Queue<Node> q = new LinkedList<Node>();
+		if (r != nil)
+			q.add(r);
+		while (!q.isEmpty()) {
+			Node u = q.remove();
+
+			/* action code here */
+			if (isLeaf(u))
+				return depth(u);
+			/* action code here */
+
+			if (u.left != nil)
+				q.add(u.left);
+			if (u.right != nil)
+				q.add(u.right);
+		}
+
+		return -2;
 	}
 
 	protected int dawnOfSpringHelper(Node u, int d) {

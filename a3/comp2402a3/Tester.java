@@ -55,8 +55,8 @@ public class Tester {
         // skippityTest(20);
         // treeTest(20);
 
-        BinaryTree t = BinaryTree.randomBST(3);
+        BinaryTree t = BinaryTree.randomBST(5);
         System.out.println(t.toString());
-        System.out.println(t.leafAndOnlyLeaf());
+        // System.out.println(t.dawnOfSpring());
     }
 }
