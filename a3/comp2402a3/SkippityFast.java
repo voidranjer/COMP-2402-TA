@@ -188,13 +188,16 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 
 		// Inserting w: stack[i] -> w -> old stack[i].next[i]
 		for (int i = 0; i < w.next.length; i++) {
+			Node<T> uNode = stack[i]; // 'u' node at level i
+			int uIndex = uIndices[i]; // index of 'u' node at level i
+
 			w.next[i] = stack[i].next[i]; // points w to nodes that are supposed to come after w
 			stack[i].next[i] = w; // points nodes before w to w
 
-			int iMinusj = index - uIndices[i]; // [LIST FUNCTIONALITY]: distance between 'u' and 'w' at level i (page 96 - ODS
-																					// textbook)
-			w.length[i] = u.length[i] - iMinusj; // [LIST FUNCTIONALITY]
-			u.length[i] = iMinusj; // [LIST FUNCTIONALITY]
+			int iMinusj = index - uIndex; // [LIST FUNCTIONALITY]: distance between 'u' and 'w' at level i (page 96 - ODS
+																		// textbook)
+			w.length[i] = uNode.length[i] - iMinusj; // [LIST FUNCTIONALITY]
+			uNode.length[i] = iMinusj; // [LIST FUNCTIONALITY]
 		}
 
 		n++;
