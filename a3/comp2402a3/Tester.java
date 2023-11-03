@@ -52,11 +52,12 @@ public class Tester {
     }
 
     public static void main(String[] args) {
-        // skippityTest(20);
-        // treeTest(20);
+        SkippityFast<Integer> iss = new SkippityFast<>();
+        iss.add(0);
+        iss.add(1);
+        iss.add(2);
+        iss.add(3);
 
-        BinaryTree t = BinaryTree.randomBST(5);
-        System.out.println(t.toString());
-        // System.out.println(t.dawnOfSpring());
+        System.out.println(iss.get(-1));
     }
 }

@@ -1,5 +1,7 @@
 package comp2402a3;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
@@ -341,14 +343,66 @@ public class BinaryTree<Node extends BinaryTree.BTNode<Node>> {
 	}
 
 	public int monkeyLand() {
-		// TODO: Your code goes here, must avoid recursion
-		int h = height(), max_width = 0;
-		for (int i = 0; i < h; i++) {
-			int width = monkeyLandHelper(r, 0, i);
-			if (width > max_width)
-				max_width = width;
+		if (r == nil)
+			return 0;
+
+		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+		int depth = 0;
+
+		Node u = r, prev = nil, next;
+		while (u != nil) {
+
+			// came from parent
+			if (prev == u.parent) {
+				if (u.left != nil) {
+					next = u.left;
+					// depth++;
+					// map.putIfAbsent(depth, 0);
+					// map.put(depth, map.get(depth) + 1);
+				} else if (u.right != nil) {
+					next = u.right;
+					// depth++;
+					// map.putIfAbsent(depth, 0);
+					// map.put(depth, map.get(depth) + 1);
+				} else {
+					next = u.parent;
+					// depth--;
+				}
+			}
+
+			// came from left child
+			else if (prev == u.left) {
+				if (u.right != nil) {
+					next = u.right;
+					// depth++;
+					// map.putIfAbsent(depth, 0);
+					// map.put(depth, map.get(depth) + 1);
+				} else {
+					next = u.parent;
+					// depth--;
+				}
+			}
+
+			// came from right child
+			else {
+				next = u.parent;
+				// depth--;
+			}
+
+			// CUSTOM: Keep track of depth for all iterations
+			if (next == u.parent)
+				depth--;
+			else {
+				depth++;
+				map.putIfAbsent(depth, 0);
+				map.put(depth, map.get(depth) + 1);
+			}
+
+			prev = u;
+			u = next;
 		}
-		return max_width;
+
+		return Collections.max(map.values());
 	}
 
 	protected int monkeyLandHelper(Node u, int d, int D) {
@@ -359,10 +413,45 @@ public class BinaryTree<Node extends BinaryTree.BTNode<Node>> {
 		return monkeyLandHelper(u.left, d + 1, D) + monkeyLandHelper(u.right, d + 1, D);
 	}
 
+	// public String bracketSequence() {
+	// StringBuilder sb = new StringBuilder();
+	// // TODO: Your code goes here, use sb.append(), must avoid recursion
+	// bracketSequenceHelper(r, sb);
+	// return sb.toString();
+	// }
+
 	public String bracketSequence() {
+		if (r == nil)
+			return ".";
 		StringBuilder sb = new StringBuilder();
-		// TODO: Your code goes here, use sb.append(), must avoid recursion
-		bracketSequenceHelper(r, sb);
+		// TODO: Your code goes here, must avoid recursion
+		Node u = r, prev = nil, next;
+		while (u != nil) {
+			if (prev == u.parent) {
+				if (u.left != nil) {
+					next = u.left;
+					sb.append("(");
+				} else if (u.right != nil) {
+					next = u.right;
+					sb.append("(.");
+				} else {
+					next = u.parent;
+					sb.append("(..)");
+				}
+			} else if (prev == u.left) {
+				if (u.right != nil) {
+					next = u.right;
+				} else {
+					next = u.parent;
+					sb.append(".)");
+				}
+			} else {
+				next = u.parent;
+				sb.append(")");
+			}
+			prev = u;
+			u = next;
+		}
 		return sb.toString();
 	}
 

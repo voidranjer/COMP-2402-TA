@@ -229,6 +229,9 @@ public class SkippityFast<T> implements IndexedSSet<T> {
 	}
 
 	public T get(int i) {
+		if (i < 0 || i > n - 1)
+			throw new IndexOutOfBoundsException();
+
 		Node<T> u = sentinel;
 		int level = h;
 		int index = -1; // index of sentinel is always -1
