@@ -17,19 +17,7 @@ public class Tester {
     }
 
     static void skippityTest(int n) {
-        IndexedSSet<Integer> iss = new SkippityFast<>();
-
-        iss.add(0);
-        iss.add(1);
-        iss.add(2);
-        iss.add(3);
-        iss.add(4);
-        iss.add(5);
-        iss.add(6);
-
-        showContents(iss);
-
-        System.out.println(iss.get(2));
+        // IndexedSSet<Integer> iss = new SkippityFast<>();
 
         // Random rand = new Random();
         // for (int i = 0; i < n; i++) {
@@ -64,7 +52,11 @@ public class Tester {
     }
 
     public static void main(String[] args) {
-        skippityTest(20);
+        // skippityTest(20);
         // treeTest(20);
+
+        BinaryTree t = BinaryTree.randomBST(3);
+        System.out.println(t.toString());
+        System.out.println(t.leafAndOnlyLeaf());
     }
 }
