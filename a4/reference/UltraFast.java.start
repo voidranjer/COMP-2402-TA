@@ -1,0 +1,50 @@
+package comp2402a4;
+
+import java.util.Iterator;
+
+public class UltraFast implements UltraStack {
+  // TODO: Your data structures go here
+
+  public UltraFast() {
+    // TODO: Your code goes here
+  }
+
+  public void push(int x) {
+    // TODO: Your code goes here
+  }
+
+  public Integer pop() {
+    // TODO: Your code goes here
+    return null;
+  }
+
+  public Integer get(int i) {
+    // TODO: Your code goes here
+    return null;
+  }
+
+  public Integer set(int i, int x) {
+    // TODO: Your code goes here
+    return null;
+  }
+
+  public Integer max() {
+    // TODO: Your code goes here
+    return null;
+  }
+
+  public long ksum(int k) {
+    // TODO: Your code goes here
+    return 0;
+  }
+
+  public int size() {
+    // TODO: Your code goes here
+    return -1;
+  }
+
+  public Iterator<Integer> iterator() {
+    // TODO: Your code goes here
+    return null;
+  }
+}
