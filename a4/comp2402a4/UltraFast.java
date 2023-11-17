@@ -118,8 +118,8 @@ public class UltraFast implements UltraStack {
      */
     int currIndex = stackStart + size - k;
     long sum = sumHeap.get(currIndex);
-    int parentIndex = getParentIndex(currIndex);
-    while (currIndex >= 0) {
+    while (currIndex > 0) {
+      int parentIndex = getParentIndex(currIndex);
       /*
        * If we made a right turn to get to parent (meaning that we're on the left
        * child right now), add the right child's value to the sum
@@ -127,7 +127,7 @@ public class UltraFast implements UltraStack {
       if (getLeftChildIndex(parentIndex) == currIndex) {
         sum += sumHeap.get(getRightChildIndex(parentIndex)); // or, just do `sum += sumHeap.get(currIndex + 1)`
       }
-      parentIndex = getParentIndex(currIndex);
+      currIndex = getParentIndex(currIndex);
     }
 
     return sum;
