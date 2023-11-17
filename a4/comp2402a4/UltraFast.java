@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class UltraFast implements UltraStack {
   final static int INITIAL_HEIGHT = 3;
 
-  ArrayList<Integer> sumHeap;
+  ArrayList<Long> sumHeap;
   ArrayList<Integer> maxHeap;
   int stackStart; // index of first element in stack (first element on the bottom level)
   int height;
@@ -39,7 +39,7 @@ public class UltraFast implements UltraStack {
 
   // Clone from source UltraFast to this UltraFast
   private void clone(UltraFast source) {
-    this.sumHeap = new ArrayList<Integer>(source.sumHeap);
+    this.sumHeap = new ArrayList<Long>(source.sumHeap);
     this.maxHeap = new ArrayList<Integer>(source.maxHeap);
     this.stackStart = source.stackStart;
     this.height = source.height;
@@ -61,10 +61,10 @@ public class UltraFast implements UltraStack {
     this.height = height;
     size = 0;
 
-    sumHeap = new ArrayList<Integer>();
+    sumHeap = new ArrayList<Long>();
     maxHeap = new ArrayList<Integer>();
     for (int i = 0; i < getNumNodesOfHeap(height); i++) {
-      sumHeap.add(0);
+      sumHeap.add(0L);
       maxHeap.add(0);
     }
 
@@ -114,7 +114,7 @@ public class UltraFast implements UltraStack {
     }
 
     int targetIndex = stackStart + size - 1;
-    int targetValue = sumHeap.get(targetIndex);
+    int targetValue = maxHeap.get(targetIndex);
 
     /*
      * edge case: bottom-most level of maxHeap has to be manually updated. levels
@@ -139,12 +139,12 @@ public class UltraFast implements UltraStack {
   }
 
   public Integer get(int i) {
-    return sumHeap.get(stackStart + i);
+    return maxHeap.get(stackStart + i);
   }
 
   public Integer set(int i, int x) {
     int targetIndex = stackStart + i;
-    int targetValue = sumHeap.get(targetIndex);
+    int targetValue = maxHeap.get(targetIndex);
 
     /*
      * edge case: bottom-most level of maxHeap has to be manually updated. levels
