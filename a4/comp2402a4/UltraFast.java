@@ -45,16 +45,16 @@ public class UltraFast implements UltraStack {
   }
 
   public void push(int x) {
-    int targetIndex = stackStart + size;
-
-    sumHeap.set(targetIndex, x);
 
     // traverse up the tree and update the sum
-    int parentIndex = getParentIndex(targetIndex);
-    while (parentIndex > 0) {
-      sumHeap.set(parentIndex, sumHeap.get(parentIndex) + x);
-      parentIndex = getParentIndex(parentIndex);
+    int currentIndex = stackStart + size;
+    while (currentIndex > 0) {
+      sumHeap.set(currentIndex, sumHeap.get(currentIndex) + x);
+      currentIndex = getParentIndex(currentIndex);
     }
+
+    // handle edge case of root node
+    sumHeap.set(0, sumHeap.get(0) + x);
 
     size++;
   }
@@ -68,11 +68,14 @@ public class UltraFast implements UltraStack {
     int targetValue = sumHeap.get(targetIndex);
 
     // traverse up the tree and update the sum
-    int parentIndex = getParentIndex(targetIndex);
-    while (parentIndex > 0) {
-      sumHeap.set(parentIndex, sumHeap.get(parentIndex) - targetValue);
-      parentIndex = getParentIndex(parentIndex);
+    int currentIndex = targetIndex;
+    while (currentIndex > 0) {
+      sumHeap.set(currentIndex, sumHeap.get(currentIndex) - targetValue);
+      currentIndex = getParentIndex(currentIndex);
     }
+
+    // handle edge case of root node
+    sumHeap.set(0, sumHeap.get(0) - targetValue);
 
     size--;
 
@@ -94,6 +97,9 @@ public class UltraFast implements UltraStack {
       sumHeap.set(parentIndex, sumHeap.get(parentIndex) - targetValue + x);
       parentIndex = getParentIndex(parentIndex);
     }
+
+    // handle edge case of root node
+    sumHeap.set(0, sumHeap.get(0) - targetValue + x);
 
     return targetValue;
   }
@@ -117,18 +123,18 @@ public class UltraFast implements UltraStack {
      * Traverse to the top of the tree, add to sum each time we make a right turn to
      * get to parent
      */
-    int currIndex = stackStart + size - k;
-    long sum = sumHeap.get(currIndex);
-    while (currIndex > 0) {
-      int parentIndex = getParentIndex(currIndex);
+    int currentIndex = stackStart + size - k;
+    long sum = sumHeap.get(currentIndex);
+    while (currentIndex > 0) {
+      int parentIndex = getParentIndex(currentIndex);
       /*
        * If we made a right turn to get to parent (meaning that we're on the left
        * child right now), add the right child's value to the sum
        */
-      if (getLeftChildIndex(parentIndex) == currIndex) {
-        sum += sumHeap.get(getRightChildIndex(parentIndex)); // or, just do `sum += sumHeap.get(currIndex + 1)`
+      if (getLeftChildIndex(parentIndex) == currentIndex) {
+        sum += sumHeap.get(getRightChildIndex(parentIndex)); // or, just do `sum += sumHeap.get(currentIndex + 1)`
       }
-      currIndex = getParentIndex(currIndex);
+      currentIndex = getParentIndex(currentIndex);
     }
 
     return sum;

@@ -12,7 +12,7 @@ public class CustomTester {
     }
 
     System.out.println(stack.sumHeap);
-    stack.set(1, 3);
+    stack.pop();
     System.out.println(stack.sumHeap);
     System.out.println(stack.ksum(2));
   }
