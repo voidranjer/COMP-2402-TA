@@ -2,13 +2,12 @@ package comp2402a4;
 
 import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class UltraFast implements UltraStack {
   final static int INITIAL_HEIGHT = 3;
 
-  ArrayList<Long> sumHeap;
-  ArrayList<Integer> maxHeap;
+  long[] sumHeap;
+  int[] maxHeap;
   int stackStart; // index of first element in stack (first element on the bottom level)
   int height;
   int size;
@@ -43,10 +42,10 @@ public class UltraFast implements UltraStack {
     // should be left/right side agnostic, works with either child index
 
     int parentIndex = getParentIndex(childIndex);
-    int leftChildValue = maxHeap.get(getLeftChildIndex(parentIndex));
-    int rightChildValue = maxHeap.get(getRightChildIndex(parentIndex));
+    int leftChildValue = maxHeap[getLeftChildIndex(parentIndex)];
+    int rightChildValue = maxHeap[getRightChildIndex(parentIndex)];
     int maxChildValue = Math.max(leftChildValue, rightChildValue);
-    maxHeap.set(parentIndex, maxChildValue);
+    maxHeap[parentIndex] = maxChildValue;
   }
 
   // Completely reset the stack, given a starting height
@@ -54,14 +53,10 @@ public class UltraFast implements UltraStack {
     this.height = height;
     size = 0;
 
-    sumHeap = new ArrayList<Long>();
-    maxHeap = new ArrayList<Integer>();
-    for (int i = 0; i < getNumNodesOfHeap(height); i++) {
-      sumHeap.add(0L);
-      maxHeap.add(0);
-    }
+    sumHeap = new long[getNumNodesOfHeap(height)];
+    maxHeap = new int[getNumNodesOfHeap(height)];
 
-    stackStart = sumHeap.size() - getNumNodesOnLevel(height);
+    stackStart = sumHeap.length - getNumNodesOnLevel(height);
   }
 
   public UltraFast() {
@@ -79,7 +74,7 @@ public class UltraFast implements UltraStack {
      * edge case: bottom-most level of maxHeap has to be manually updated. levels
      * above will be handled by `updateParentMax()` in the loop below
      */
-    maxHeap.set(targetIndex, x);
+    maxHeap[targetIndex] = x;
 
     // traverse up the tree and update partial sums and maxes
     int currentIndex = targetIndex;
@@ -87,7 +82,7 @@ public class UltraFast implements UltraStack {
       int parentIndex = getParentIndex(currentIndex);
 
       // update sum
-      sumHeap.set(currentIndex, sumHeap.get(currentIndex) + x);
+      sumHeap[currentIndex] = sumHeap[currentIndex] + x;
 
       // update parent max
       updateParentMax(currentIndex);
@@ -96,7 +91,7 @@ public class UltraFast implements UltraStack {
     }
 
     // handle edge case of root node
-    sumHeap.set(0, sumHeap.get(0) + x);
+    sumHeap[0] = sumHeap[0] + x;
 
     size++;
   }
@@ -107,24 +102,24 @@ public class UltraFast implements UltraStack {
     }
 
     int targetIndex = stackStart + size - 1;
-    int targetValue = maxHeap.get(targetIndex);
+    int targetValue = maxHeap[targetIndex];
 
     /*
      * edge case: bottom-most level of maxHeap has to be manually updated. levels
      * above will be handled by `updateParentMax()` in the loop below
      */
-    maxHeap.set(targetIndex, 0);
+    maxHeap[targetIndex] = 0;
 
     // traverse up the tree and update the sum and max
     int currentIndex = targetIndex;
     while (currentIndex > 0) {
-      sumHeap.set(currentIndex, sumHeap.get(currentIndex) - targetValue);
+      sumHeap[currentIndex] = sumHeap[currentIndex] - targetValue;
       updateParentMax(currentIndex);
       currentIndex = getParentIndex(currentIndex);
     }
 
     // handle edge case of root node
-    sumHeap.set(0, sumHeap.get(0) - targetValue);
+    sumHeap[0] = sumHeap[0] - targetValue;
 
     size--;
 
@@ -132,29 +127,29 @@ public class UltraFast implements UltraStack {
   }
 
   public Integer get(int i) {
-    return maxHeap.get(stackStart + i);
+    return maxHeap[stackStart + i];
   }
 
   public Integer set(int i, int x) {
     int targetIndex = stackStart + i;
-    int targetValue = maxHeap.get(targetIndex);
+    int targetValue = maxHeap[targetIndex];
 
     /*
      * edge case: bottom-most level of maxHeap has to be manually updated. levels
      * above will be handled by `updateParentMax()` in the loop below
      */
-    maxHeap.set(targetIndex, x);
+    maxHeap[targetIndex] = x;
 
     // traverse up the tree and update the sum and max
     int currentIndex = targetIndex;
     while (currentIndex > 0) {
-      sumHeap.set(currentIndex, sumHeap.get(currentIndex) - targetValue + x);
+      sumHeap[currentIndex] = sumHeap[currentIndex] - targetValue + x;
       updateParentMax(currentIndex);
       currentIndex = getParentIndex(currentIndex);
     }
 
     // handle edge case of root node
-    sumHeap.set(0, sumHeap.get(0) - targetValue + x);
+    sumHeap[0] = sumHeap[0] - targetValue + x;
 
     return targetValue;
   }
@@ -163,7 +158,7 @@ public class UltraFast implements UltraStack {
     if (size == 0)
       return null;
 
-    return maxHeap.get(0);
+    return maxHeap[0];
   }
 
   // Sum of the last k elements in the stack
@@ -173,7 +168,7 @@ public class UltraFast implements UltraStack {
     }
 
     if (k >= size) {
-      return sumHeap.get(0);
+      return sumHeap[0];
     }
 
     /*
@@ -181,7 +176,7 @@ public class UltraFast implements UltraStack {
      * get to parent
      */
     int currentIndex = stackStart + size - k;
-    long sum = sumHeap.get(currentIndex);
+    long sum = sumHeap[currentIndex];
     while (currentIndex > 0) {
       int parentIndex = getParentIndex(currentIndex);
       /*
@@ -189,7 +184,7 @@ public class UltraFast implements UltraStack {
        * child right now), add the right child's value to the sum
        */
       if (getLeftChildIndex(parentIndex) == currentIndex)
-        sum += sumHeap.get(currentIndex + 1);
+        sum += sumHeap[currentIndex + 1];
 
       currentIndex = getParentIndex(currentIndex);
     }
@@ -206,8 +201,8 @@ public class UltraFast implements UltraStack {
     int[] newMaxHeap = new int[newTotalNodes];
 
     // take new root node from old root node (root stays the same)
-    newSumHeap[0] = sumHeap.get(0);
-    newMaxHeap[0] = maxHeap.get(0);
+    newSumHeap[0] = sumHeap[0];
+    newMaxHeap[0] = maxHeap[0];
 
     // use existing heap as left child, and merge with a right child that is empty
     int nodesRead = 0;
@@ -217,8 +212,8 @@ public class UltraFast implements UltraStack {
 
       for (int j = 0; j < halfNumNodesOnLevel; j++) {
         // left child of root node
-        newSumHeap[levelStartIndex + j] = sumHeap.get(nodesRead);
-        newMaxHeap[levelStartIndex + j] = maxHeap.get(nodesRead);
+        newSumHeap[levelStartIndex + j] = sumHeap[nodesRead];
+        newMaxHeap[levelStartIndex + j] = maxHeap[nodesRead];
         nodesRead++;
 
         // right child of root node
@@ -228,16 +223,10 @@ public class UltraFast implements UltraStack {
       }
     }
 
-    sumHeap = new ArrayList<>();
-    maxHeap = new ArrayList<>();
-    for (int i = 0; i < newTotalNodes; i++) {
-      sumHeap.add(newSumHeap[i]);
-      maxHeap.add(newMaxHeap[i]);
-    }
-    // sumHeap = newSumHeap;
-    // maxHeap = newMaxHeap;
+    sumHeap = newSumHeap;
+    maxHeap = newMaxHeap;
     height++;
-    stackStart = sumHeap.size() - getNumNodesOnLevel(height);
+    stackStart = sumHeap.length - getNumNodesOnLevel(height);
   }
 
   public int size() {
