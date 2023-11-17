@@ -146,6 +146,12 @@ public class UltraFast implements UltraStack {
     int targetIndex = stackStart + i;
     int targetValue = sumHeap.get(targetIndex);
 
+    /*
+     * edge case: bottom-most level of maxHeap has to be manually updated. levels
+     * above will be handled by `updateParentMax()` in the loop below
+     */
+    maxHeap.set(targetIndex, x);
+
     // traverse up the tree and update the sum and max
     int currentIndex = targetIndex;
     while (currentIndex > 0) {

@@ -3,7 +3,7 @@ package comp2402a4;
 public class CustomTester {
 
   public static void main(String[] args) {
-    UltraStack stack = new UltraFast();
+    UltraFast stack = new UltraFast();
 
     // Push some values onto the stack
     int[] values = { 3, 5, 9, 9, 7 };
@@ -14,8 +14,8 @@ public class CustomTester {
 
     stack.pop();
     System.out.println(stack.max());
-    stack.pop();
-    System.out.println(stack.max());
+    stack.set(1, 10);
+    System.out.println(stack.maxHeap);
     stack.pop();
     System.out.println(stack.max());
   }
