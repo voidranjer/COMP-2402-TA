@@ -234,7 +234,16 @@ public class UltraFast implements UltraStack {
   }
 
   public Iterator<Integer> iterator() {
-    // TODO: Your code goes here
-    return null;
+    return new Iterator<Integer>() {
+      int i = 0;
+
+      public Integer next() {
+        return get(i++);
+      }
+
+      public boolean hasNext() {
+        return i < size;
+      }
+    };
   }
 }
