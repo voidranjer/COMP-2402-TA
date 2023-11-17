@@ -37,15 +37,6 @@ public class UltraFast implements UltraStack {
     return 2 * i + 2;
   }
 
-  // Clone from source UltraFast to this UltraFast
-  private void clone(UltraFast source) {
-    this.sumHeap = new ArrayList<Long>(source.sumHeap);
-    this.maxHeap = new ArrayList<Integer>(source.maxHeap);
-    this.stackStart = source.stackStart;
-    this.height = source.height;
-    this.size = source.size;
-  }
-
   // Update parent's value in maxHeap given any of the 2 children's index
   private void updateParentMax(int childIndex) {
     // should be left/right side agnostic, works with either child index
@@ -57,7 +48,8 @@ public class UltraFast implements UltraStack {
     maxHeap.set(parentIndex, maxChildValue);
   }
 
-  public UltraFast(int height) {
+  // Completely reset the stack, given a starting height
+  private void reset(int height) {
     this.height = height;
     size = 0;
 
@@ -72,7 +64,7 @@ public class UltraFast implements UltraStack {
   }
 
   public UltraFast() {
-    this(INITIAL_HEIGHT);
+    reset(INITIAL_HEIGHT);
   }
 
   public void push(int x) {
@@ -175,7 +167,7 @@ public class UltraFast implements UltraStack {
 
   // Sum of the last k elements in the stack
   public long ksum(int k) {
-    if (size == 0) {
+    if (size == 0 || k <= 0) {
       return 0;
     }
 
@@ -195,9 +187,9 @@ public class UltraFast implements UltraStack {
        * If we made a right turn to get to parent (meaning that we're on the left
        * child right now), add the right child's value to the sum
        */
-      if (getLeftChildIndex(parentIndex) == currentIndex) {
-        sum += sumHeap.get(getRightChildIndex(parentIndex)); // or, just do `sum += sumHeap.get(currentIndex + 1)`
-      }
+      if (getLeftChildIndex(parentIndex) == currentIndex)
+        sum += sumHeap.get(currentIndex + 1);
+
       currentIndex = getParentIndex(currentIndex);
     }
 
@@ -205,14 +197,20 @@ public class UltraFast implements UltraStack {
   }
 
   private void addLevel() {
-    UltraFast newStack = new UltraFast(height + 1);
+    ArrayList<Integer> oldStack = new ArrayList<Integer>();
 
-    // copy over values from old stack
+    // store old stack
     for (int i = 0; i < size; i++) {
-      newStack.push(get(i));
+      oldStack.add(maxHeap.get(stackStart + i));
     }
 
-    clone(newStack);
+    reset(height + 1);
+
+    // restore from old stack
+    for (int i = 0; i < oldStack.size(); i++) {
+      push(oldStack.get(i));
+    }
+
   }
 
   public int size() {
