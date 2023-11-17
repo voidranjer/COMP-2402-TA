@@ -197,20 +197,37 @@ public class UltraFast implements UltraStack {
   }
 
   private void addLevel() {
-    ArrayList<Integer> oldStack = new ArrayList<Integer>();
+    ArrayList<Long> newSumHeap = new ArrayList<Long>();
+    ArrayList<Integer> newMaxHeap = new ArrayList<Integer>();
 
-    // store old stack
-    for (int i = 0; i < size; i++) {
-      oldStack.add(maxHeap.get(stackStart + i));
+    // take new root node from old root node (root stays the same)
+    newSumHeap.add(sumHeap.get(0));
+    newMaxHeap.add(maxHeap.get(0));
+
+    // use existing heap as left child, and merge with a right child that is empty
+    int nodesAdded = 0;
+    for (int i = 1; i < height + 1; i++) {
+
+      int numNodesOnLevel = getNumNodesOnLevel(i);
+
+      // left child of root node
+      for (int j = 0; j < numNodesOnLevel; j++) {
+        newSumHeap.add(sumHeap.get(nodesAdded));
+        newMaxHeap.add(maxHeap.get(nodesAdded));
+        nodesAdded++;
+      }
+
+      // right child of root node
+      for (int j = 0; j < numNodesOnLevel; j++) {
+        newSumHeap.add(0L);
+        newMaxHeap.add(0);
+      }
     }
 
-    reset(height + 1);
-
-    // restore from old stack
-    for (int i = 0; i < oldStack.size(); i++) {
-      push(oldStack.get(i));
-    }
-
+    sumHeap = newSumHeap;
+    maxHeap = newMaxHeap;
+    height++;
+    stackStart = sumHeap.size() - getNumNodesOnLevel(height);
   }
 
   public int size() {
