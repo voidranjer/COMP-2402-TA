@@ -2,6 +2,7 @@ package comp2402a4;
 
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class UltraFast implements UltraStack {
   final static int INITIAL_HEIGHT = 3;
@@ -197,35 +198,44 @@ public class UltraFast implements UltraStack {
   }
 
   private void addLevel() {
-    ArrayList<Long> newSumHeap = new ArrayList<Long>();
-    ArrayList<Integer> newMaxHeap = new ArrayList<Integer>();
+    int newTotalNodes = getNumNodesOfHeap(height + 1);
+
+    // ArrayList<Long> newSumHeap = new ArrayList<Long>();
+    // ArrayList<Integer> newMaxHeap = new ArrayList<Integer>();
+    long[] newSumHeap = new long[newTotalNodes];
+    int[] newMaxHeap = new int[newTotalNodes];
 
     // take new root node from old root node (root stays the same)
-    newSumHeap.add(sumHeap.get(0));
-    newMaxHeap.add(maxHeap.get(0));
+    newSumHeap[0] = sumHeap.get(0);
+    newMaxHeap[0] = maxHeap.get(0);
 
     // use existing heap as left child, and merge with a right child that is empty
-    int nodesAdded = 0;
+    int nodesRead = 0;
     for (int i = 1; i < height + 1; i++) {
+      int halfNumNodesOnLevel = getNumNodesOnLevel(i);
+      int levelStartIndex = getNumNodesOfHeap(i + 1) - getNumNodesOnLevel(i + 1);
 
-      int numNodesOnLevel = getNumNodesOnLevel(i);
+      for (int j = 0; j < halfNumNodesOnLevel; j++) {
+        // left child of root node
+        newSumHeap[levelStartIndex + j] = sumHeap.get(nodesRead);
+        newMaxHeap[levelStartIndex + j] = maxHeap.get(nodesRead);
+        nodesRead++;
 
-      // left child of root node
-      for (int j = 0; j < numNodesOnLevel; j++) {
-        newSumHeap.add(sumHeap.get(nodesAdded));
-        newMaxHeap.add(maxHeap.get(nodesAdded));
-        nodesAdded++;
-      }
+        // right child of root node
+        newSumHeap[(levelStartIndex + j) + halfNumNodesOnLevel] = 0L;
+        newMaxHeap[(levelStartIndex + j) + halfNumNodesOnLevel] = 0;
 
-      // right child of root node
-      for (int j = 0; j < numNodesOnLevel; j++) {
-        newSumHeap.add(0L);
-        newMaxHeap.add(0);
       }
     }
 
-    sumHeap = newSumHeap;
-    maxHeap = newMaxHeap;
+    sumHeap = new ArrayList<>();
+    maxHeap = new ArrayList<>();
+    for (int i = 0; i < newTotalNodes; i++) {
+      sumHeap.add(newSumHeap[i]);
+      maxHeap.add(newMaxHeap[i]);
+    }
+    // sumHeap = newSumHeap;
+    // maxHeap = newMaxHeap;
     height++;
     stackStart = sumHeap.size() - getNumNodesOnLevel(height);
   }

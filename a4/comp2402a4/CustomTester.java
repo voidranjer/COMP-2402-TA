@@ -12,6 +12,7 @@ public class CustomTester {
     }
 
     System.out.println(stack.ksum(1000));
+    System.out.println(stack.get(2));
   }
 
 }
