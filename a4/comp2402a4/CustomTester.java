@@ -11,9 +11,10 @@ public class CustomTester {
       stack.push(value);
     }
 
-    for (int i = 0; i < values.length; i++) {
-      System.out.println(stack.ksum(2));
-    }
+    System.out.println(stack.sumHeap);
+    stack.set(1, 3);
+    System.out.println(stack.sumHeap);
+    System.out.println(stack.ksum(2));
   }
 
 }

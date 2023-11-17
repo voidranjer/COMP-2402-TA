@@ -86,6 +86,7 @@ public class UltraFast implements UltraStack {
   public Integer set(int i, int x) {
     int targetIndex = stackStart + i;
     int targetValue = sumHeap.get(targetIndex);
+    sumHeap.set(targetIndex, x);
 
     // traverse up the tree and update the sum
     int parentIndex = getParentIndex(targetIndex);
