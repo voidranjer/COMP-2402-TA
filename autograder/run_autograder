@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Set up autograder files
+
+# Copy submission files
+# cp /autograder/submission/calculator.py /autograder/source/calculator.py
+cp -r /autograder/source/assets /autograder/assets
+cp /autograder/source/testcasedef.py /autograder/testcasedef.py
+cp /autograder/source/testcases.py /autograder/testcases.py
+cp /autograder/source/run_tests.py /autograder/run_tests.py
+cd /autograder
+python3 run_tests.py

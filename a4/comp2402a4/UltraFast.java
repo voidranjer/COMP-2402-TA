@@ -161,6 +161,9 @@ public class UltraFast implements UltraStack {
   }
 
   public Integer max() {
+    if (size == 0)
+      return null;
+
     return maxHeap.get(0);
   }
 
