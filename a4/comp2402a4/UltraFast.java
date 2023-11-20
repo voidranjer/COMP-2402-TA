@@ -1,7 +1,6 @@
 package comp2402a4;
 
 import java.util.Iterator;
-import java.util.ArrayList;
 
 public class UltraFast implements UltraStack {
   final static int INITIAL_HEIGHT = 3;
@@ -216,9 +215,10 @@ public class UltraFast implements UltraStack {
         newMaxHeap[levelStartIndex + j] = maxHeap[nodesRead];
         nodesRead++;
 
-        // right child of root node
-        newSumHeap[(levelStartIndex + j) + halfNumNodesOnLevel] = 0L;
-        newMaxHeap[(levelStartIndex + j) + halfNumNodesOnLevel] = 0;
+        // right child of root node (no need to actually set 0s because default Array
+        // values are zeros)
+        // newSumHeap[(levelStartIndex + j) + halfNumNodesOnLevel] = 0L;
+        // newMaxHeap[(levelStartIndex + j) + halfNumNodesOnLevel] = 0;
 
       }
     }
