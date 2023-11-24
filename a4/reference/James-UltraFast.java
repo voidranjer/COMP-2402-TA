@@ -1,7 +1,6 @@
 package comp2402a4;
 
 import java.util.Iterator;
-import java.util.Arrays;
 
 // Should use bit shifting
 

@@ -6,13 +6,15 @@ public class CustomTester {
     UltraFast stack = new UltraFast();
 
     // Push some values onto the stack
-    int[] values = { 3, 5, 2, 7, 9, 1, 4, 6, 8, 1 };
+    int[] values = { 3, 5, 2 };
     for (int value : values) {
       stack.push(value);
     }
 
-    System.out.println(stack.ksum(1000));
-    System.out.println(stack.get(2));
+    for (int i = 0; i < 10; i++) {
+      stack.pop();
+    }
+
   }
 
 }
