@@ -6,6 +6,7 @@ import java.util.Stack;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Algorithms {
 
@@ -31,11 +32,12 @@ public class Algorithms {
 		}
 	}
 
-	/*
-	 * CUSTOM: If any 3 nodes form a triangle, then 2 containers will not be able to
-	 * safely contain all 3 of these chemicals
-	 */
-	public static boolean bfsTriangle(Graph g, int r) {
+	public static boolean bfsIsBipartite(Graph g, int r) {
+		/* ========== BIPARTITE CODE ========== */
+		HashMap<Integer, Boolean> bipartiteSides = new HashMap<>();
+		bipartiteSides.put(r, true);
+		/* ========== BIPARTITE CODE ========== */
+
 		boolean[] explored = new boolean[g.nVertices()];
 		Queue<Integer> q = new LinkedList<Integer>();
 		q.add(r);
@@ -43,28 +45,25 @@ public class Algorithms {
 		while (!q.isEmpty()) {
 			int i = q.remove();
 
-			ArrayList<Integer> neighbours = new ArrayList<>();
-
 			for (Integer j : g.outEdges(i)) {
 				if (!explored[j]) {
 					q.add(j);
 					explored[j] = true;
 				}
 
-				/*
-				 * Two of the neighbours of i are connected, and since these neighbours are both
-				 * connected to i, a triangle has to be present
-				 */
-				for (Integer neighbour : neighbours) {
-					if (g.hasEdge(j, neighbour)) {
-						// System.out.println(i + " => " + j + " => " + neighbour);
-						return true;
+				/* ========== BIPARTITE CODE ========== */
+				boolean currSide = bipartiteSides.get(i);
+				for (Integer neighbour : g.outEdges(i)) {
+					if (bipartiteSides.containsKey(neighbour) && bipartiteSides.get(neighbour) == currSide) {
+						return false;
 					}
+					bipartiteSides.put(neighbour, !currSide);
 				}
+				/* ========== BIPARTITE CODE ========== */
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	// bfs but also prints out the "edge" formed in the BFS tree.

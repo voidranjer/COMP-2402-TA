@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.HashMap;
 
 public class MixAndBoom {
     /**
@@ -19,27 +20,38 @@ public class MixAndBoom {
 
     public static void doIt(BufferedReader r, PrintWriter w) throws IOException {
         int N = Integer.parseInt(r.readLine());
-        Graph g = new AdjacencyLists(N);
+        Graph g = new AdjacencyLists(N + 1);
+
+        Integer lastValue = null;
 
         for (String line = r.readLine(); line != null; line = r.readLine()) {
             String[] splitted = line.split(" ");
             int u = Integer.parseInt(splitted[0]), v = Integer.parseInt(splitted[1]);
-
-            // Make graph undirected
             g.addEdge(u, v);
             g.addEdge(v, u);
 
-            // Check for triangles (3 nodes connected to each other, u + v + a 3rd common
-            // neighbour)
-            for (Integer neighbour : g.outEdges(u)) {
-                if (g.hasEdge(v, neighbour)) {
-                    w.println("no");
-                    return;
-                }
-            }
+            lastValue = v;
+            /*
+             * Check for triangles (3 nodes connected to each other, u + v + a 3rd common
+             * neighbour)
+             */
+            // for (Integer neighbour : g.outEdges(u)) {
+            // if (g.hasEdge(v, neighbour)) {
+            // w.println("no");
+            // return;
+            // }
+            // }
         }
 
-        w.println("yes");
+        if (lastValue == null)
+            return;
+
+        if (Algorithms.bfsIsBipartite(g, lastValue)) {
+            w.println("yes");
+        } else {
+            w.println("no");
+        }
+
     }
 
     /**
