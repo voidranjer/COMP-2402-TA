@@ -33,7 +33,10 @@ public class SnakesAndLadders {
 		// Graph g = new AdjacencyLists(N + 1);
 
 		for (int i = START_INDEX; i <= END_INDEX; i++) {
-			g.addEdge(i - 1, i);
+			for (int j = 0; j < 6; j++) {
+				if (i + j <= END_INDEX)
+					g.addEdge(i - 1, i + j);
+			}
 		}
 
 		for (String line = r.readLine(); line != null; line = r.readLine()) {
@@ -58,11 +61,16 @@ public class SnakesAndLadders {
 			 */
 			// if (u != 1)
 			// g.removeEdge(u - 1, 0);
-			g.addEdge(u, v);
+
+			for (int i = 1; i < 7; i++) {
+				if (u - i > 0)
+					g.addEdge(u - i, v);
+			}
 		}
 
 		int shortestDist = Algorithms.bfs(g, START_INDEX, END_INDEX);
-		w.println((int) Math.ceil(shortestDist / 6.0));
+		w.println(shortestDist);
+		// w.println((int) Math.ceil(shortestDist / 6.0));
 	}
 
 	/**

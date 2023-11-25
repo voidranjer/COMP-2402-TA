@@ -1,251 +1,222 @@
 package comp2402a4;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Iterator;
 
-// Should use bit shifting
-
 public class UltraFast implements UltraStack {
-  final static int INITIAL_HEIGHT = 3;
-
-  long[] sumHeap;
-  int[] maxHeap;
-  int stackStart; // index of first element in stack (first element on the bottom level)
-  int height;
-  int size;
-
-  // Get number of nodes present on the level 'h'
-  private int getNumNodesOnLevel(int h) {
-    return (int) Math.pow(2, h - 1);
-  }
-
-  // Get actual total number of nodes given the height 'h' of the heap
-  private int getNumNodesOfHeap(int h) {
-    return getNumNodesOnLevel(h + 1) - 1;
-  }
-
-  // Get index of parent
-  private int getParentIndex(int i) {
-    return (i - 1) / 2; // implicit floor
-  }
-
-  // Get index of left child
-  private int getLeftChildIndex(int i) {
-    return 2 * i + 1;
-  }
-
-  // Get index of right child
-  private int getRightChildIndex(int i) {
-    return 2 * i + 2;
-  }
-
-  // Update parent's value in maxHeap given any of the 2 children's index
-  private void updateParentMax(int childIndex) {
-    // should be left/right side agnostic, works with either child index
-
-    int parentIndex = getParentIndex(childIndex);
-    int leftChildValue = maxHeap[getLeftChildIndex(parentIndex)];
-    int rightChildValue = maxHeap[getRightChildIndex(parentIndex)];
-    int maxChildValue = Math.max(leftChildValue, rightChildValue);
-    maxHeap[parentIndex] = maxChildValue;
-  }
-
-  // Completely reset the stack, given a starting height
-  private void reset(int height) {
-    this.height = height;
-    size = 0;
-
-    sumHeap = new long[getNumNodesOfHeap(height)];
-    maxHeap = new int[getNumNodesOfHeap(height)];
-
-    stackStart = sumHeap.length - getNumNodesOnLevel(height);
-  }
+  List<Integer> ds;
+  long[] sums;
+  int[] max;
+  int height, resizeCount;
+  int stackAt, start;
 
   public UltraFast() {
-    reset(INITIAL_HEIGHT);
+    ds = new ArrayList<Integer>();
+    max = new int[3];
+    sums = new long[3];
+    height = 2;
+    stackAt = 1;
+    start = 1;
+    resizeCount = 0;
   }
 
   public void push(int x) {
-    if (size == getNumNodesOnLevel(height)) {
-      addLevel();
+    // System.out.println(stackAt);
+    //// System.out.println(max.length);
+    //// System.out.println("VAELUE : " + x);
+    //// System.out.println("MAX ARRAY: " + Arrays.toString(max));
+    //// System.out.println("sums ARRAY: " + Arrays.toString(sums));
+    // System.out.println(resizeCount);
+    if (stackAt == max.length) {
+      // Resize the arrays
+      resize(stackAt * 2 + 1);
+      stackAt = (int) (sums.length - (Math.pow(2, resizeCount)));
     }
 
-    int targetIndex = stackStart + size;
+    ds.add(x);
+    max[stackAt] = x;
+    sums[stackAt] = x;
+    int curr = stackAt;
+    // System.out.println("STACK AT:" + stackAt);
+    while (curr >= 1) {
 
-    /*
-     * edge case: bottom-most level of maxHeap has to be manually updated. levels
-     * above will be handled by `updateParentMax()` in the loop below
-     */
-    maxHeap[targetIndex] = x;
+      int parent = (curr - 1) >> 1;
 
-    // traverse up the tree and update partial sums and maxes
-    int currentIndex = targetIndex;
-    while (currentIndex > 0) {
-      int parentIndex = getParentIndex(currentIndex);
-
-      // update sum
-      sumHeap[currentIndex] = sumHeap[currentIndex] + x;
-
-      // update parent max
-      updateParentMax(currentIndex);
-
-      currentIndex = parentIndex;
+      if (curr % 2 == 0) {
+        max[parent] = Math.max(max[curr], max[curr - 1]);
+        sums[parent] = sums[curr] + sums[curr - 1];
+        // System.out.println(sums[curr]);
+      } else {
+        max[parent] = Math.max(max[curr], max[curr + 1]);
+        sums[parent] = sums[curr] + sums[curr + 1];
+      }
+      curr = parent;
+      // System.out.println(curr);
     }
 
-    // handle edge case of root node
-    sumHeap[0] = sumHeap[0] + x;
+    // System.out.println("MAX ARRAY: " + Arrays.toString(max));
+    // System.out.println("sums ARRAY: " + Arrays.toString(sums));
 
-    size++;
+    stackAt++;
+
   }
 
   public Integer pop() {
-    if (size == 0) {
+    if (ds.isEmpty())
       return null;
+
+    // System.out.println("STACK AT" + stackAt);
+    max[stackAt - 1] = 0;
+    sums[stackAt - 1] = 0;
+    int curr = stackAt - 1;
+
+    while (curr >= 1) {
+
+      int parent = (curr - 1) >> 1;
+      // System.out.println("CURR INDEX: " + curr);
+      // System.out.println("PARENT INDEXL " + parent);
+      // System.out.println("SUMS AVLUE: " + sums[curr]);
+      // System.out.println("PARENT VALUE: " + sums[parent]);
+      if (curr % 2 == 0) {
+        max[parent] = Math.max(max[curr], max[curr - 1]);
+        sums[parent] = sums[curr] + sums[curr - 1];
+      } else {
+        max[parent] = max[curr];
+        sums[parent] = sums[curr];
+      }
+      curr = parent;
     }
+    //
+    // System.out.println("MAX ARRAY: " + Arrays.toString(max));
+    // System.out.println("sums ARRAY: " + Arrays.toString(sums));
+    stackAt--;
 
-    int targetIndex = stackStart + size - 1;
-    int targetValue = maxHeap[targetIndex];
-
-    /*
-     * edge case: bottom-most level of maxHeap has to be manually updated. levels
-     * above will be handled by `updateParentMax()` in the loop below
-     */
-    maxHeap[targetIndex] = 0;
-
-    // traverse up the tree and update the sum and max
-    int currentIndex = targetIndex;
-    while (currentIndex > 0) {
-      sumHeap[currentIndex] = sumHeap[currentIndex] - targetValue;
-      updateParentMax(currentIndex);
-      currentIndex = getParentIndex(currentIndex);
-    }
-
-    // handle edge case of root node
-    sumHeap[0] = sumHeap[0] - targetValue;
-
-    size--;
-
-    return targetValue;
+    return ds.remove(ds.size() - 1);
   }
 
   public Integer get(int i) {
-    return maxHeap[stackStart + i];
+    if (i < 0 || i >= ds.size())
+      return null;
+    return ds.get(i);
   }
 
+  // DONE
   public Integer set(int i, int x) {
-    int targetIndex = stackStart + i;
-    int targetValue = maxHeap[targetIndex];
+    // System.out.println("MAX ARRAY BEFORE: " + Arrays.toString(max));
+    // System.out.println("SUMS ARRAY BEFORE: " + Arrays.toString(sums));
 
-    /*
-     * edge case: bottom-most level of maxHeap has to be manually updated. levels
-     * above will be handled by `updateParentMax()` in the loop below
-     */
-    maxHeap[targetIndex] = x;
-
-    // traverse up the tree and update the sum and max
-    int currentIndex = targetIndex;
-    while (currentIndex > 0) {
-      sumHeap[currentIndex] = sumHeap[currentIndex] - targetValue + x;
-      updateParentMax(currentIndex);
-      currentIndex = getParentIndex(currentIndex);
-    }
-
-    // handle edge case of root node
-    sumHeap[0] = sumHeap[0] - targetValue + x;
-
-    return targetValue;
-  }
-
-  public Integer max() {
-    if (size == 0)
+    if (i < 0 || i >= ds.size())
       return null;
 
-    return maxHeap[0];
-  }
+    int curr = start + i;
 
-  // Sum of the last k elements in the stack
-  public long ksum(int k) {
-    if (size == 0 || k <= 0) {
-      return 0;
-    }
+    max[curr] = x;
+    sums[curr] = x;
 
-    if (k >= size) {
-      return sumHeap[0];
-    }
+    while (curr >= 1) {
 
-    /*
-     * Traverse to the top of the tree, add to sum each time we make a right turn to
-     * get to parent
-     */
-    int currentIndex = stackStart + size - k;
-    long sum = sumHeap[currentIndex];
-    while (currentIndex > 0) {
-      int parentIndex = getParentIndex(currentIndex);
-      /*
-       * If we made a right turn to get to parent (meaning that we're on the left
-       * child right now), add the right child's value to the sum
-       */
-      if (getLeftChildIndex(parentIndex) == currentIndex)
-        sum += sumHeap[currentIndex + 1];
+      int parent = (curr - 1) >> 1;
+      // System.out.println(parent);
 
-      currentIndex = getParentIndex(currentIndex);
-    }
-
-    return sum;
-  }
-
-  private void addLevel() {
-    int newTotalNodes = getNumNodesOfHeap(height + 1);
-
-    // ArrayList<Long> newSumHeap = new ArrayList<Long>();
-    // ArrayList<Integer> newMaxHeap = new ArrayList<Integer>();
-    long[] newSumHeap = new long[newTotalNodes];
-    int[] newMaxHeap = new int[newTotalNodes];
-
-    // take new root node from old root node (root stays the same)
-    newSumHeap[0] = sumHeap[0];
-    newMaxHeap[0] = maxHeap[0];
-
-    // use existing heap as left child, and merge with a right child that is empty
-    int nodesRead = 0;
-    for (int i = 1; i < height + 1; i++) {
-      int halfNumNodesOnLevel = getNumNodesOnLevel(i);
-      int levelStartIndex = getNumNodesOfHeap(i + 1) - getNumNodesOnLevel(i + 1);
-
-      for (int j = 0; j < halfNumNodesOnLevel; j++) {
-        // left child of root node
-        newSumHeap[levelStartIndex + j] = sumHeap[nodesRead];
-        newMaxHeap[levelStartIndex + j] = maxHeap[nodesRead];
-        nodesRead++;
-
-        // right child of root node (no need to actually set 0s because default Array
-        // values are zeros)
-        // newSumHeap[(levelStartIndex + j) + halfNumNodesOnLevel] = 0L;
-        // newMaxHeap[(levelStartIndex + j) + halfNumNodesOnLevel] = 0;
-
+      if (curr % 2 == 0) {
+        max[parent] = Math.max(max[curr], max[curr - 1]);
+        sums[parent] = sums[curr] + sums[curr - 1];
+      } else {
+        max[parent] = Math.max(max[curr], max[curr + 1]);
+        sums[parent] = sums[curr] + sums[curr + 1];
       }
+      curr = parent;
     }
 
-    sumHeap = newSumHeap;
-    maxHeap = newMaxHeap;
-    height++;
-    stackStart = sumHeap.length - getNumNodesOnLevel(height);
+    // System.out.println("MAX ARRAY: " + Arrays.toString(max));
+    // System.out.println("sums ARRAY: " + Arrays.toString(sums));
+
+    return ds.set(i, x);
+  }
+
+  // DONE
+  public Integer max() {
+    if (ds.isEmpty()) {
+      return null;
+    }
+    return max[0];
+  }
+
+  public long ksum(int k) {
+
+    if (k <= 0)
+      return 0;
+
+    if (k == 1) {
+      return ds.get(ds.size() - 1);
+    }
+
+    // System.out.println(ds.size() + start);
+    int curr = start + ds.size() - k;
+    // System.out.println("STARTING INDEX " + curr);
+    long leftNodeSums = 0;
+
+    while (curr >= 1) {
+
+      int parent = (curr - 1) >> 1;
+      // System.out.println(parent);
+
+      if (curr % 2 == 0) {
+        // sum += sums[curr];
+        leftNodeSums += sums[curr - 1];
+        // System.out.println("LEFT NODE SUMS " + leftNodeSums);
+      }
+      curr = parent;
+    }
+
+    return sums[0] - leftNodeSums;
   }
 
   public int size() {
-    return size;
+    return ds.size();
   }
 
   public Iterator<Integer> iterator() {
-    return new Iterator<Integer>() {
-      int i = 0;
-
-      public Integer next() {
-        return get(i++);
-      }
-
-      public boolean hasNext() {
-        return i < size;
-      }
-    };
+    return ds.iterator();
   }
+
+  private void resize(int newSize) {
+    // System.out.println("NEWSIZE: "+ newSize);
+    resizeCount++;
+    start = stackAt;
+    // System.out.println("START " + start);
+    int[] newMax = new int[newSize];
+    long[] newSums = new long[newSize];
+
+    int index = 0;
+
+    newSums[1] = sums[0];
+
+    int oldIn = 0;
+    int newIn = 1;
+
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < (1 << i); j++) {
+        newSums[newIn] = sums[oldIn];
+        newMax[newIn] = max[oldIn];
+
+        oldIn++;
+        newIn++;
+      }
+      newIn += (1 << i);
+
+      // System.out.println("NEW IN" + newIn);
+
+    }
+
+    // System.out.println(Arrays.toString(newSums));
+    max = newMax;
+
+    sums = newSums;
+
+    height++;
+  }
+
 }

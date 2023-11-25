@@ -30,7 +30,7 @@
       "request": "launch",
       "mainClass": "comp2402a5.SnakesAndLadders",
       "projectName": "a5_1009f57",
-      "args": ["reference/infile-2-1.txt"]
+      "args": ["reference/infile-2-8.txt"]
     }
   ]
 }

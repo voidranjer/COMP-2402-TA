@@ -149,9 +149,23 @@ public class CustomTester {
   }
 
   public static void main(String[] args) {
-    ultraTest(new UltraSlow(), new UltraFast(), 10000);
+    // ultraTest(new UltraSlow(), new UltraFast(), 10000);
 
-    // UltraFast test = new UltraFast();
+    UltraFast test = new UltraFast();
+
+    test.push(0);
+    // test.pop();
+
+    // test.push(28);
+    // test.push(29);
+
+    // test.pop();
+
+    // test.push(47);
+
+    test.set(0, 75);
+
+    test.max();
 
     // test.push(28);
     // test.push(29);
