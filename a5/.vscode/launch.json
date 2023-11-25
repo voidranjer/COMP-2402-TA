@@ -1,0 +1,36 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "AdjacencyLists",
+      "request": "launch",
+      "mainClass": "comp2402a5.AdjacencyLists",
+      "projectName": "a5_1009f57"
+    },
+    {
+      "type": "java",
+      "name": "MixAndBoom",
+      "request": "launch",
+      "mainClass": "comp2402a5.MixAndBoom",
+      "projectName": "a5_1009f57"
+    },
+    {
+      "type": "java",
+      "name": "SnakesAndLadders",
+      "request": "launch",
+      "mainClass": "comp2402a5.SnakesAndLadders",
+      "projectName": "a5_1009f57",
+      "args": ["reference/infile-2-1.txt"]
+    }
+  ]
+}

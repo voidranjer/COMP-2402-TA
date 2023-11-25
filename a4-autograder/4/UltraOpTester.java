@@ -1,10 +1,9 @@
 import comp2402a4.UltraStack;
 import java.util.Random;
 
-public class UltraOpTester extends BaseTester {
+public class UltraOpTester extends BaseTester{
     protected static boolean doTest(int n) {
-        DataGenerator[] dgs = { new RandomDataGenerator(4 * n), new IncreasingDataGenerator(4 * n),
-                new DecreasingDataGenerator(4 * n) };
+        DataGenerator[] dgs = {new RandomDataGenerator(4*n), new IncreasingDataGenerator(4*n), new DecreasingDataGenerator(4*n)};
 
         for (DataGenerator dg : dgs) {
             boolean result = doTest(dg, n);
@@ -22,7 +21,7 @@ public class UltraOpTester extends BaseTester {
         try {
             UltraStack us0 = new RefUltraFast();
             UltraStack us1 = new comp2402a4.UltraFast();
-            for (int k = 0; k < 4 * n; k++) {
+            for (int k = 0; k < 4*n; k++) {
                 int op = rand.nextInt(7);
                 if (op < 2) {
                     int x = dg.nextData();
@@ -48,13 +47,12 @@ public class UltraOpTester extends BaseTester {
                     }
                 } else if (op == 5) {
                     if (!compareIntegers(us0.max(), us1.max())) {
-                        System.out.println("YOOOO: " + us0.max() + " " + us1.max());
-
                         println("ERROR: Incorrect value of max()");
                         return false;
                     }
-                } else {
-                    int x = rand.nextInt(us0.size() + 10);
+                }
+                else {
+                    int x = rand.nextInt(us0.size()+10);
                     if (us0.ksum(x) != us1.ksum(x)) {
                         println("ERROR: Incorrect value of ksum(x)");
                         return false;
@@ -65,20 +63,21 @@ public class UltraOpTester extends BaseTester {
                     return false;
                 }
             }
-        } catch (Exception | Error e) {
-            String excpname = e.getClass().getSimpleName();
-            StackTraceElement[] traces = e.getStackTrace();
-            for (StackTraceElement trace : traces) {
-                String classname = trace.getClassName();
-                String methodname = trace.getMethodName();
-                if (classname.startsWith("comp2402")) {
-                    println(classname + "." + methodname + "() resulted in " + excpname + ".");
-                    return false;
-                }
-            }
-            println("Exception on server side, please report this.");
-            return false;
         }
+        catch (Exception | Error e){
+		  String excpname = e.getClass().getSimpleName();
+		  StackTraceElement[] traces = e.getStackTrace();
+		  for(StackTraceElement trace: traces){
+		    String classname = trace.getClassName();
+		    String methodname = trace.getMethodName();
+		    if(classname.startsWith("comp2402")){
+		      println(classname+"."+methodname+"() resulted in "+excpname+".");
+		      return false;
+		    }
+		  }
+		  println("Exception on server side, please report this.");
+		  return false;
+		}
         return true;
     }
 
