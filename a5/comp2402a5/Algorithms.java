@@ -6,7 +6,6 @@ import java.util.Stack;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Algorithms {
 
@@ -34,8 +33,8 @@ public class Algorithms {
 
 	public static boolean bfsIsBipartite(Graph g, int r) {
 		/* ========== BIPARTITE CODE ========== */
-		HashMap<Integer, Boolean> bipartiteSides = new HashMap<>();
-		bipartiteSides.put(r, true);
+		Boolean[] bipartiteSides = new Boolean[g.nVertices()];
+		bipartiteSides[r] = true;
 		/* ========== BIPARTITE CODE ========== */
 
 		boolean[] explored = new boolean[g.nVertices()];
@@ -52,18 +51,53 @@ public class Algorithms {
 				}
 
 				/* ========== BIPARTITE CODE ========== */
-				boolean currSide = bipartiteSides.get(i);
+				boolean currSide = bipartiteSides[i];
 				for (Integer neighbour : g.outEdges(i)) {
-					if (bipartiteSides.containsKey(neighbour) && bipartiteSides.get(neighbour) == currSide) {
-						return false;
-					}
-					bipartiteSides.put(neighbour, !currSide);
+					if (bipartiteSides[neighbour] != null && bipartiteSides[neighbour] == currSide) return false;
+					bipartiteSides[neighbour] = !currSide;
 				}
 				/* ========== BIPARTITE CODE ========== */
 			}
 		}
 
 		return true;
+	}
+
+	public static int bfsSixFaceDie(Graph g, int start, int end) {
+		final int DIE_FACE_NUM = 6;
+
+		boolean[] explored = new boolean[g.nVertices()];
+		
+		Queue<Integer> q = new LinkedList<Integer>();
+		Queue<Integer> d = new LinkedList<Integer>();
+		
+		q.add(start);
+		d.add(0);
+
+		explored[start] = true;
+
+		while (!q.isEmpty()) {
+			int i = q.remove();
+			int dist = d.remove();
+
+			/* ========== SIX FACE DIE CODE ========== */
+			for (int roll = 1; roll <= DIE_FACE_NUM && i + roll <= end; roll++) {
+				int pos = i + roll;
+				
+				// if a shortcut (snake/ladder) exists, we are forced to take it
+				if (g.outDegree(pos) > 0) pos = g.outEdges(pos).get(0);
+
+				if (pos == end) return dist + 1;
+				if (!explored[pos]) {
+					q.add(pos);
+					d.add(dist + 1);
+					explored[pos] = true;
+				}
+			}
+			/* ========== SIX FACE DIE CODE ========== */
+		}
+
+		return -1;
 	}
 
 	// bfs but also prints out the "edge" formed in the BFS tree.
