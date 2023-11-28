@@ -1,0 +1,111 @@
+package comp2402a5;
+// Thanks to Pat Morin for the skeleton of this file!
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.HashMap;
+
+public class SnakesAndLadders {
+
+	private static int getShortestDist(HashMap<Integer, Integer> jumps, int s, int t) {
+		boolean[] explored = new boolean[t + 1];
+		
+		Queue<Integer> q = new LinkedList<Integer>();
+		Queue<Integer> d = new LinkedList<Integer>();
+		q.add(s);
+		d.add(0);
+		explored[s] = true;
+
+		while (!q.isEmpty()) {
+			int i = q.remove();
+			int dist = d.remove();
+
+			for (int dice = 1; dice < 6; dice++) {
+				int box = i + dice + 1;
+
+				// exceeded the board
+				if (box > t) break;
+				
+				// take jump
+				if (jumps.containsKey(box)) box = jumps.get(box);
+
+				// reached the end of the board
+				if (box == t) return dist + 1;
+
+				// add to queue
+				if (!explored[box]) {
+					q.add(box);
+					d.add(dist + 1);
+					explored[box] = true;
+				}
+			}
+		}
+
+		return -1;
+	}
+
+
+	/**
+	 * Your code goes here
+	 * 
+	 * @param r the reader to read from
+	 * @param w the writer to write to
+	 * @throws IOException
+	 */
+
+	public static void doIt(BufferedReader r, PrintWriter w) throws IOException {
+		int N = Integer.parseInt(r.readLine());
+		HashMap<Integer, Integer> jumps = new HashMap<Integer, Integer>();
+
+		for (String line = r.readLine(); line != null; line = r.readLine()) {
+			String[] splitted = line.split(" ");
+			int u = Integer.parseInt(splitted[0]), v = Integer.parseInt(splitted[1]);
+			jumps.put(u, v);
+		}
+
+		int dist = getShortestDist(jumps, 1, (int) Math.pow(N, 2));
+		w.println(dist);
+	}
+
+	/**
+	 * The driver. Open a BufferedReader and a PrintWriter, either from System.in
+	 * and System.out or from filenames specified on the command line, then call
+	 * doIt.
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			BufferedReader r;
+			PrintWriter w;
+			if (args.length == 0) {
+				r = new BufferedReader(new InputStreamReader(System.in));
+				w = new PrintWriter(System.out);
+			} else if (args.length == 1) {
+				r = new BufferedReader(new FileReader(args[0]));
+				w = new PrintWriter(System.out);
+			} else {
+				r = new BufferedReader(new FileReader(args[0]));
+				w = new PrintWriter(new FileWriter(args[1]));
+			}
+			long start = System.nanoTime();
+			doIt(r, w);
+			w.flush();
+			long stop = System.nanoTime();
+			System.out.println("Execution time: " + 1e-9 * (stop - start));
+		} catch (IOException e) {
+			System.err.println(e);
+			System.exit(-1);
+		}
+	}
+}
