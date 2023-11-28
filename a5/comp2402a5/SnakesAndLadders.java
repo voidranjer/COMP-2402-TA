@@ -29,49 +29,16 @@ public class SnakesAndLadders {
 		final int START_INDEX = 1;
 		final int END_INDEX = N * N;
 
-		Graph g = new AdjacencyLists(END_INDEX + START_INDEX);
-
-		// for (int i = START_INDEX; i <= END_INDEX; i++) {
-		// 	for (int j = 0; j < 6; j++) {
-		// 		if (i + j <= END_INDEX)
-		// 			g.addEdge(i - 1, i + j);
-		// 	}
-		// }
+		Integer[] shortcuts = new Integer[END_INDEX + START_INDEX];
 
 		for (String line = r.readLine(); line != null; line = r.readLine()) {
 			String[] splitted = line.split(" ");
 			int u = Integer.parseInt(splitted[0]), v = Integer.parseInt(splitted[1]);
-
-			g.addEdge(u, v);
-
-			// ladder
-			// if (u < v) {
-			// g.removeEdge(u, u + 1);
-			// g.addEdge(u, v);
-			// }
-
-			// snake
-			// else {
-			// g.removeEdge(u, u + 1);
-			// g.addEdge(u, v);
-			// }
-
-			/*
-			 * "u - 1" and not "u" here is important. should jump before reaching the target
-			 * node, otherwise it would have been too late.
-			 */
-			// if (u != 1)
-			// g.removeEdge(u - 1, 0);
-
-			// for (int i = 1; i < 7; i++) {
-			// 	if (u - i > 0)
-			// 		g.addEdge(u - i, v);
-			// }
+			shortcuts[u] = v;
 		}
 
-		int shortestDist = Algorithms.bfsSixFaceDie(g, START_INDEX, END_INDEX);
+		int shortestDist = Algorithms.bfsSixFaceDie(shortcuts, START_INDEX, END_INDEX);
 		w.println(shortestDist);
-		// w.println((int) Math.ceil(shortestDist / 6.0));
 	}
 
 	/**

@@ -63,10 +63,10 @@ public class Algorithms {
 		return true;
 	}
 
-	public static int bfsSixFaceDie(Graph g, int start, int end) {
+	public static int bfsSixFaceDie(Integer[] shortcuts, int start, int end) {
 		final int DIE_FACE_NUM = 6;
 
-		boolean[] explored = new boolean[g.nVertices()];
+		boolean[] explored = new boolean[shortcuts.length];
 		
 		Queue<Integer> q = new LinkedList<Integer>();
 		Queue<Integer> d = new LinkedList<Integer>();
@@ -85,7 +85,7 @@ public class Algorithms {
 				int pos = i + roll;
 				
 				// if a shortcut (snake/ladder) exists, we are forced to take it
-				if (g.outDegree(pos) > 0) pos = g.outEdges(pos).get(0);
+				if (shortcuts[pos] != null) pos = shortcuts[pos];
 
 				if (pos == end) return dist + 1;
 				if (!explored[pos]) {
