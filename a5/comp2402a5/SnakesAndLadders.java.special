@@ -17,30 +17,30 @@ import java.util.HashMap;
 
 public class SnakesAndLadders {
 
-	private static int getShortestDist(HashMap<Integer, Integer> jumps, int s, int t) {
-		boolean[] explored = new boolean[t + 1];
+	private static int getShortestDist(HashMap<Integer, Integer> jumps, int end) {
+		boolean[] explored = new boolean[end];
 		
 		Queue<Integer> q = new LinkedList<Integer>();
 		Queue<Integer> d = new LinkedList<Integer>();
-		q.add(s);
+		q.add(1); // starting position
 		d.add(0);
-		explored[s] = true;
+		explored[1] = true;
 
 		while (!q.isEmpty()) {
 			int i = q.remove();
 			int dist = d.remove();
 
-			for (int dice = 1; dice < 6; dice++) {
-				int box = i + dice + 1;
+			for (int dice = 1; dice < 7; dice++) {
+				int box = i + dice;
 
 				// exceeded the board
-				if (box > t) break;
+				if (box > end) break;
 				
 				// take jump
 				if (jumps.containsKey(box)) box = jumps.get(box);
 
 				// reached the end of the board
-				if (box == t) return dist + 1;
+				if (box == end) return dist + 1;
 
 				// add to queue
 				if (!explored[box]) {
@@ -73,7 +73,7 @@ public class SnakesAndLadders {
 			jumps.put(u, v);
 		}
 
-		int dist = getShortestDist(jumps, 1, (int) Math.pow(N, 2));
+		int dist = getShortestDist(jumps, (int) Math.pow(N, 2));
 		w.println(dist);
 	}
 

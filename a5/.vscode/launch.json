@@ -22,7 +22,8 @@
       "name": "MixAndBoom",
       "request": "launch",
       "mainClass": "comp2402a5.MixAndBoom",
-      "projectName": "a5_1009f57"
+      "projectName": "a5_1009f57",
+      "args": ["reference/infile-1-3.txt"]
     },
     {
       "type": "java",
@@ -30,7 +31,7 @@
       "request": "launch",
       "mainClass": "comp2402a5.SnakesAndLadders",
       "projectName": "a5_1009f57",
-      "args": ["reference/infile-2-8.txt"]
+      "args": ["reference/infile-2-1.txt"]
     }
   ]
 }
